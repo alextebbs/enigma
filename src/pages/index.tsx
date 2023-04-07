@@ -1,5 +1,7 @@
 import dynamic from 'next/dynamic'
-import Plugboard from '@/components/dom/Plugboard/Plugboard'
+import Plugboard from '@/components/dom/Plugboard'
+import IO from '@/components/dom/IO'
+import { createContext, useState } from 'react'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
@@ -9,9 +11,22 @@ const Logo = dynamic(() => import('@/components/canvas/Logo'), { ssr: false })
 
 // Dom components go here
 export default function Page(props) {
+  const [plugboardState, setPlugboardState] = useState({ A: 'B', B: 'A' })
+  const [currentPressedKey, setCurrentPressedKey] = useState('')
+
   return (
     <>
-      <Plugboard />
+      <IO
+        plugboardState={plugboardState}
+        currentPressedKey={currentPressedKey}
+        setCurrentPressedKey={setCurrentPressedKey}
+      />
+
+      <Plugboard
+        currentPressedKey={currentPressedKey}
+        plugboardState={plugboardState}
+        setPlugboardState={setPlugboardState}
+      />
     </>
   )
 }
