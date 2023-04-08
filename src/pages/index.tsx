@@ -26,55 +26,51 @@ export default function Page(props) {
   const onTextAreaChange = (e) => {
     if (e.repeat == true) return
 
-    let positions = [1, rotors[1].position, rotors[2].position]
+    let positions = [rotors[1].position, rotors[1].position, rotors[2].position]
 
-    let newCipherText = [...e.target.value]
-      .map((c) => {
-        if (ALPHA.indexOf(c.toUpperCase()) === -1) return c
+    let newCipherText = [...e.target.value].map((c) => {
+      if (ALPHA.indexOf(c.toUpperCase()) === -1) return c
 
-        let newChar = c.toUpperCase()
+      let newChar = c.toUpperCase()
 
-        newChar = plugboardState[newChar] || newChar
+      // First through the plugboard
+      newChar = plugboardState[newChar] || newChar
 
-        for (let i = 0; i < 3; i++) {
-          let idx = (ALPHA.indexOf(newChar) + positions[i]) % 26
-          newChar = rotors[i].wiring[idx]
-          console.log(`rotor ${i}: ${newChar} to ${rotors[i].wiring[idx]}`)
-        }
+      // Next through the rotors
+      for (let i = 0; i < 3; i++) {
+        let idx = (ALPHA.indexOf(newChar) + positions[i]) % 26
+        newChar = rotors[i].wiring[idx]
+      }
 
-        console.log(
-          `reflector: ${newChar} to ${
-            reflector.wiring[ALPHA.indexOf(newChar)]
-          }`,
-        )
-        newChar = reflector.wiring[ALPHA.indexOf(newChar)]
+      // Then through the reflector
+      newChar = reflector.wiring[ALPHA.indexOf(newChar)]
 
-        for (let i = 2; i > -1; i--) {
-          let idx = (rotors[i].wiring.indexOf(newChar) - positions[i]) % 26
-          idx = (idx + 26) % 26
-          console.log(`rotor ${i}: ${newChar} to ${ALPHA[idx]}`)
-          newChar = ALPHA[idx]
-        }
+      // Then back through the rotors
+      for (let i = 2; i > -1; i--) {
+        let idx = (rotors[i].wiring.indexOf(newChar) - positions[i] + 26) % 26
+        newChar = ALPHA[idx]
+      }
 
-        newChar = plugboardState[newChar] || newChar
+      // Finally, back through the plugboard again
+      newChar = plugboardState[newChar] || newChar
 
-        positions[0] = (positions[0] + 1) % 26
+      // Rotate the first rotor every time
+      positions[0] = (positions[0] + 1) % 26
 
-        if (rotors[0].wiring[positions[0]] === rotors[0].notch) {
-          positions[1] = (positions[1] + 1) % 26
-        }
+      // Rotate the second rotor if the first rotor is at its notch
+      if (rotors[0].wiring[positions[0]] === rotors[0].notch) {
+        positions[1] = (positions[1] + 1) % 26
+      }
 
-        if (rotors[1].wiring[positions[1]] === rotors[1].notch) {
-          positions[2] = (positions[2] + 1) % 26
-        }
+      // Rotate the third rotor if the second rotor is at its notch
+      if (rotors[1].wiring[positions[1]] === rotors[1].notch) {
+        positions[2] = (positions[2] + 1) % 26
+      }
 
-        return newChar
-      })
-      .join('')
+      return newChar
+    })
 
-    console.log(positions)
-
-    setCipherText(newCipherText)
+    setCipherText(newCipherText.join(''))
     setPlainText(e.target.value)
   }
 
