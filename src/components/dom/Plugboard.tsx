@@ -6,15 +6,7 @@ import tailwindConfig from 'tailwind.config.js'
 
 const fullConfig = resolveConfig(tailwindConfig)
 
-console.log(fullConfig)
-
 type Point = [x: number, y: number]
-
-/*
-  TODO: 1. Draw the canvas dynamically, ie - make a new canvas for each event click
-        2. Deal with removing items
-        3. Hovering over an active item should highlight it's partner
-*/
 
 const getDistance = (x1, y1, x2, y2) => {
   let y = x2 - x1
@@ -70,10 +62,12 @@ const PlugboardKey = forwardRef<HTMLDivElement, PlugboardKeyProps>(
       keyStateClasses = 'text-green-300 border-green-300'
       dotStateClasses = 'border-green-300'
     }
+
     if (active) {
       keyStateClasses = 'text-white border-white'
       dotStateClasses = 'bg-white border-white'
     }
+
     if (active && hovered) {
       if (isEditing) {
         keyStateClasses = 'text-white border-white hover:cursor-not-allowed'
@@ -101,7 +95,7 @@ const PlugboardKey = forwardRef<HTMLDivElement, PlugboardKeyProps>(
         onClick={(e) => onPlugboardKeyClick(e)}
         onMouseEnter={(e) => onPlugboardKeyMouseEnter(e)}
         onMouseLeave={(e) => onPlugboardKeyMouseLeave(e)}
-        className={`plugboardKey hover:cursor-pointer inline-block px-3 mx-2 py-2 pb-3 rounded-lg uppercase font-bold border font-mono ${keyStateClasses}`}>
+        className={`plugboardKey cursor-pointer inline-block px-3 mx-1 py-2 pb-3 rounded-lg uppercase font-bold border ${keyStateClasses}`}>
         {char.toLowerCase()}
         <div
           className={`rounded-full w-3 h-3 border-2 mt-2 ${dotStateClasses}`}></div>
@@ -124,19 +118,9 @@ export default function Plugboard({
   const workingBezierStart = useRef(null)
   const canvasRect = useRef(null)
 
-  const keysRef = useRef(null)
-
   const plugboard = useRef(null)
   const canvas = useRef(null)
   const workingCanvas = useRef(null)
-
-  function getMap() {
-    if (!keysRef.current) {
-      // initialize the Map on first usage.
-      keysRef.current = new Map()
-    }
-    return keysRef.current
-  }
 
   useEffect(() => {
     console.log('doing useeffect things')
@@ -322,27 +306,19 @@ export default function Plugboard({
           ref={plugboard}
           onMouseMove={(e) => onPlugboardMouseMove(e)}
           className='p-20 pt-10'>
-          <div className='font-mono uppercase tracking-[.25em] text-xs text-center text-zinc-400 pb-1'>
+          <div className='uppercase tracking-[.25em] text-xs text-center text-zinc-400 pb-1'>
             Plugboard
           </div>
-          <div className='font-mono text-xs text-center text-zinc-400 pb-10'>
+          <div className='text-xs text-center text-zinc-400 pb-10'>
             Click on letters to connect them with wires.
           </div>
           {keyboardLayout.map((row) => {
             return (
-              <div className='text-center mb-3' key={row}>
+              <div className='text-center mb-2' key={row}>
                 {row.split('').map((char) => {
                   return (
                     <PlugboardKey
                       key={char}
-                      ref={(node) => {
-                        const map = getMap()
-                        if (node) {
-                          map.set(char, node)
-                        } else {
-                          map.delete(char)
-                        }
-                      }}
                       char={char}
                       active={
                         char in plugboardState || workingKey === char

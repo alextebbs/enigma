@@ -26,7 +26,7 @@ export default function Page(props) {
   const onTextAreaChange = (e) => {
     if (e.repeat == true) return
 
-    let positions = [rotors[1].position, rotors[1].position, rotors[2].position]
+    let positions = [rotors[0].position, rotors[1].position, rotors[2].position]
 
     let newCipherText = [...e.target.value].map((c) => {
       if (ALPHA.indexOf(c.toUpperCase()) === -1) return c

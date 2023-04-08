@@ -2,15 +2,10 @@ export const keyboardLayout = ['QWERTZUIO', 'ASDFGHJK', 'PYXCVBNML']
 
 export const availableRotors = [
   {
-    name: 'default',
-    wiring: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    notch: 'A',
-  },
-  {
     name: 'I',
     wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ',
     notch: 'Q',
-    position: 25,
+    position: 0,
   },
   {
     name: 'II',
@@ -39,9 +34,9 @@ export const availableRotors = [
 ]
 
 export const initialRotors = [
+  availableRotors[0],
   availableRotors[1],
   availableRotors[2],
-  availableRotors[3],
 ]
 
 export const availableReflectors = [

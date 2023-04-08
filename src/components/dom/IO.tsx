@@ -27,17 +27,26 @@ export default function IO({
   }
 
   return (
-    <div className='flex align-center justify-center border-y w-full border-gray-600 relative'>
-      <textarea
-        onChange={(e) => onTextAreaChange(e)}
-        onKeyDown={(e) => onTextAreaKeyDown(e)}
-        onKeyUp={(e) => onTextAreaKeyUp(e)}
-        value={plainText}
-        placeholder='Type a Message here'
-        className='bg-transparent leading-[3.5rem] whitespace-pre-wrap w-full p-20 h-auto max-w-screen-sm uppercase text-gray-50 focus:border-none focus:outline-none text-lg font-mono resize-none'
-      />
-      <div className='break-words	pointer-events-none leading-[3.5rem] top-[1.5rem] text-gray-500 whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-lg font-mono'>
-        {cipherText}
+    <div className='border-b border-gray-600'>
+      <div className='flex align-center justify-center w-full relative'>
+        <textarea
+          onChange={(e) => onTextAreaChange(e)}
+          onKeyDown={(e) => onTextAreaKeyDown(e)}
+          onKeyUp={(e) => onTextAreaKeyUp(e)}
+          value={plainText}
+          placeholder='Type a Message here'
+          className='bg-transparent leading-[3.5rem] whitespace-pre-wrap w-full p-20 h-auto max-w-screen-sm uppercase text-gray-50 focus:border-none focus:outline-none text-lg resize-none'
+        />
+        <div className='break-words	pointer-events-none leading-[3.5rem] top-[1.5rem] text-gray-500 whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-lg'>
+          {cipherText}
+        </div>
+      </div>
+      <div className='align-center flex justify-center mb-5'>
+        <button
+          className='text-sm uppercase border-b'
+          onClick={(e) => navigator.clipboard.writeText(cipherText)}>
+          Copy to clipboard
+        </button>
       </div>
     </div>
   )
