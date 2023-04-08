@@ -2,32 +2,13 @@ import { useState } from 'react'
 
 export default function IO({
   plugboardState,
+  plainText,
+  cipherText,
+  onTextAreaChange,
   currentPressedKey,
   setCurrentPressedKey,
 }) {
-  const [plainText, setPlainText] = useState('')
-  const [cipherText, setCipherText] = useState('')
-
-  const onTextAreaChange = (e) => {
-    if (e.repeat == true) return
-
-    console.log(plugboardState)
-
-    let newCipherText = ''
-
-    ;[...e.target.value].forEach((c) => {
-      c = c.toUpperCase()
-
-      if (isNaN(c) && c in plugboardState) {
-        newCipherText = newCipherText + plugboardState[c]
-      } else {
-        newCipherText = newCipherText + c
-      }
-    })
-
-    setCipherText(newCipherText)
-    setPlainText(e.target.value)
-  }
+  console.log('RENDERING IO')
 
   const onTextAreaKeyDown = (e) => {
     if (e.repeat == true && e.key !== 'Backspace' && e.key !== 'Delete') {

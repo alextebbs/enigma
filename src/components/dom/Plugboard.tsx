@@ -1,4 +1,4 @@
-import { KeyboardLayout } from '@/_globals'
+import { keyboardLayout } from '@/_globals'
 import { useRef, useEffect, useState, forwardRef } from 'react'
 
 import resolveConfig from 'tailwindcss/resolveConfig'
@@ -41,6 +41,8 @@ interface PlugboardKeyProps {
   char: string
   hovered: boolean
   pressed: boolean
+  working: boolean
+  isEditing: boolean
   onPlugboardKeyClick: Function
   onPlugboardKeyMouseEnter: Function
   onPlugboardKeyMouseLeave: Function
@@ -53,6 +55,8 @@ const PlugboardKey = forwardRef<HTMLDivElement, PlugboardKeyProps>(
       active,
       hovered,
       pressed,
+      working,
+      isEditing,
       onPlugboardKeyClick,
       onPlugboardKeyMouseEnter,
       onPlugboardKeyMouseLeave,
@@ -63,20 +67,31 @@ const PlugboardKey = forwardRef<HTMLDivElement, PlugboardKeyProps>(
     let dotStateClasses = 'border-green-500'
 
     if (hovered) {
-      keyStateClasses = 'text-blue-500 border-blue-500'
-      dotStateClasses = 'border-blue-500'
+      keyStateClasses = 'text-green-300 border-green-300'
+      dotStateClasses = 'border-green-300'
     }
     if (active) {
       keyStateClasses = 'text-white border-white'
       dotStateClasses = 'bg-white border-white'
     }
     if (active && hovered) {
-      keyStateClasses = 'text-red-500 border-red-500'
+      if (isEditing) {
+        keyStateClasses = 'text-white border-white hover:cursor-not-allowed'
+        dotStateClasses = 'bg-white border-white'
+      } else {
+        keyStateClasses = 'text-blue-400 border-blue-400'
+        dotStateClasses = 'bg-blue-400 border-blue-400'
+      }
+    }
+
+    if (hovered && working) {
+      keyStateClasses = 'text-red-500 border-red-500 hover:cursor-not-allowed'
       dotStateClasses = 'bg-red-500 border-red-500'
     }
+
     if (pressed) {
-      keyStateClasses = 'text-yellow-500 border-yellow-500'
-      dotStateClasses = 'bg-yellow-500 border-yellow-500'
+      keyStateClasses = 'text-yellow-300 border-yellow-300'
+      dotStateClasses = 'bg-yellow-300 border-yellow-300'
     }
 
     return (
@@ -100,9 +115,8 @@ export default function Plugboard({
   setPlugboardState,
   currentPressedKey,
 }) {
-  console.log('RENDERING')
+  console.log('RENDERING PLUGBOARD')
 
-  // const [plugboardState, setPlugboardState] = useState({})
   const [workingKey, setWorkingKey] = useState('')
   const [hoveredKey, setHoveredKey] = useState('')
 
@@ -111,8 +125,6 @@ export default function Plugboard({
   const canvasRect = useRef(null)
 
   const keysRef = useRef(null)
-
-  // const workingKey = useRef('')
 
   const plugboard = useRef(null)
   const canvas = useRef(null)
@@ -180,19 +192,17 @@ export default function Plugboard({
 
       let color
 
-      console.log('currentPressedKey', currentPressedKey)
-      console.log('startEl.dataset.key', startEl.dataset.key)
-
       if (
         startEl.dataset.key == currentPressedKey ||
         endEl.dataset.key == currentPressedKey
       ) {
-        color = fullConfig.theme.colors.yellow[500]
+        color = fullConfig.theme.colors.yellow[300]
       } else if (
-        startEl.dataset.key == hoveredKey ||
-        endEl.dataset.key == hoveredKey
+        (startEl.dataset.key == hoveredKey ||
+          endEl.dataset.key == hoveredKey) &&
+        !isEditing.current
       ) {
-        color = fullConfig.theme.colors.red[500]
+        color = fullConfig.theme.colors.blue[400]
       } else {
         color = 'white'
       }
@@ -249,6 +259,8 @@ export default function Plugboard({
     if (thisKey.dataset.key in plugboardState) {
       console.log('we clicked on something that was already set')
 
+      isEditing.current = false
+
       const newPlugboardState = plugboardState
       delete newPlugboardState[newPlugboardState[thisKey.dataset.key]]
       delete newPlugboardState[thisKey.dataset.key]
@@ -272,11 +284,17 @@ export default function Plugboard({
 
     clearWorkingCanvas()
 
+    let color = 'white'
+
+    if (workingKey == hoveredKey) {
+      color = fullConfig.theme.colors.red[500]
+    }
+
     drawBezier(
       workingCanvas.current.getContext('2d'),
       workingBezierStart.current,
       [e.clientX - canvasRect.current.left, e.clientY - canvasRect.current.top],
-      'white',
+      color,
     )
   }
 
@@ -310,7 +328,7 @@ export default function Plugboard({
           <div className='font-mono text-xs text-center text-zinc-400 pb-10'>
             Click on letters to connect them with wires.
           </div>
-          {KeyboardLayout.map((row) => {
+          {keyboardLayout.map((row) => {
             return (
               <div className='text-center mb-3' key={row}>
                 {row.split('').map((char) => {
@@ -331,6 +349,7 @@ export default function Plugboard({
                           ? true
                           : false
                       }
+                      working={workingKey === char}
                       hovered={
                         hoveredKey === char ||
                         plugboardState[char] === hoveredKey
@@ -339,6 +358,7 @@ export default function Plugboard({
                         currentPressedKey === char ||
                         plugboardState[char] === currentPressedKey
                       }
+                      isEditing={isEditing.current}
                       onPlugboardKeyClick={onPlugboardKeyClick}
                       onPlugboardKeyMouseEnter={onPlugboardKeyMouseEnter}
                       onPlugboardKeyMouseLeave={onPlugboardKeyMouseLeave}
