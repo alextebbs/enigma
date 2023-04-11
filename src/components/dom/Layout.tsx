@@ -6,7 +6,7 @@ const Layout = forwardRef(({ children, ...props }, ref) => {
   useImperativeHandle(ref, () => localRef.current)
 
   return (
-    <div {...props} ref={localRef} className='bg-zinc-900 text-gray-50'>
+    <div {...props} ref={localRef} className='bg-black text-gray-50'>
       {children}
     </div>
   )

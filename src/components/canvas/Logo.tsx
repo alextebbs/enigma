@@ -40,7 +40,7 @@ export default function Logo({ route, ...props }) {
       <Line
         worldUnits
         points={points}
-        color='red'
+        color='#1fb2f5'
         lineWidth={0.15}
         rotation={[0, 0, -1]}
       />

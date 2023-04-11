@@ -1,4 +1,6 @@
-export const keyboardLayout = ['QWERTZUIO', 'ASDFGHJK', 'PYXCVBNML']
+export const KEYBOARD_LAYOUT = ['QWERTZUIO', 'ASDFGHJK', 'PYXCVBNML']
+
+export const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 export const availableRotors = [
   {
@@ -6,30 +8,35 @@ export const availableRotors = [
     wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ',
     notch: 'Q',
     position: 0,
+    offset: 0,
   },
   {
     name: 'II',
     wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE',
     notch: 'E',
     position: 0,
+    offset: 0,
   },
   {
     name: 'III',
     wiring: 'BDFHJLCPRTXVZNYEIWGAKMUSQO',
     notch: 'V',
     position: 0,
+    offset: 0,
   },
   {
     name: 'IV',
     wiring: 'ESOVPZJAYQUIRHXLNFTGKDCMWB',
     notch: 'J',
     position: 0,
+    offset: 0,
   },
   {
     name: 'V',
     wiring: 'VZBRGITYUPSDNHLXAWMJQOFECK',
     notch: 'Z',
     position: 0,
+    offset: 0,
   },
 ]
 

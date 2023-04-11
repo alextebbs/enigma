@@ -7,7 +7,11 @@ module.exports = {
   ], // remove unused styles in production
   darkMode: 'media', // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        body: ['"Inconsolata"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+    },
   },
   variants: {
     extend: {},

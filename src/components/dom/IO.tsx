@@ -1,16 +1,11 @@
-import { useState } from 'react'
-
 export default function IO({
-  plugboardState,
   plainText,
   cipherText,
   onTextAreaChange,
-  currentPressedKey,
   setCurrentPressedKey,
 }) {
-  console.log('RENDERING IO')
-
   const onTextAreaKeyDown = (e) => {
+    // Kill repeated key presses so you can hold a key down and see the visualization without AAAAAAAAAAAAAAAAaa
     if (e.repeat == true && e.key !== 'Backspace' && e.key !== 'Delete') {
       e.preventDefault()
       return
@@ -35,9 +30,9 @@ export default function IO({
           onKeyUp={(e) => onTextAreaKeyUp(e)}
           value={plainText}
           placeholder='Type a Message here'
-          className='bg-transparent leading-[3.5rem] whitespace-pre-wrap w-full p-20 h-auto max-w-screen-sm uppercase text-gray-50 focus:border-none focus:outline-none text-lg resize-none'
+          className='bg-transparent leading-[3rem] whitespace-pre-wrap w-full p-20 h-auto max-w-screen-sm uppercase text-gray-50 focus:border-none focus:outline-none resize-none text-sm'
         />
-        <div className='break-words	pointer-events-none leading-[3.5rem] top-[1.5rem] text-gray-500 whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-lg'>
+        <div className='break-words	pointer-events-none leading-[3rem] top-[1.25rem] text-gray-500 whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-sm'>
           {cipherText}
         </div>
       </div>
