@@ -21,6 +21,14 @@ export default function IO({
     setCurrentPressedKey('')
   }
 
+  let missingLastLetter = plainText
+  missingLastLetter = missingLastLetter.split('')
+  let lastLetter = missingLastLetter.splice(-1)
+
+  let cipherMissingLastLetter = cipherText
+  cipherMissingLastLetter = cipherMissingLastLetter.split('')
+  let cipherLastLetter = cipherMissingLastLetter.splice(-1)
+
   return (
     <div className='border-b border-gray-600'>
       <div className='flex align-center justify-center w-full relative'>
@@ -32,8 +40,13 @@ export default function IO({
           placeholder='Type a Message here'
           className='bg-transparent leading-[3rem] whitespace-pre-wrap w-full p-20 h-auto max-w-screen-sm uppercase text-gray-50 focus:border-none focus:outline-none resize-none text-sm'
         />
+        <div className='break-words	pointer-events-none leading-[3rem] whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-sm'>
+          <span className='text-transparent'>{missingLastLetter}</span>
+          <span className='text-yellow-500'>{lastLetter}</span>
+        </div>
         <div className='break-words	pointer-events-none leading-[3rem] top-[1.25rem] text-gray-500 whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-sm'>
-          {cipherText}
+          {cipherMissingLastLetter}
+          <span className='text-pink-500'>{cipherLastLetter}</span>
         </div>
       </div>
       <div className='align-center flex justify-center mb-5'>

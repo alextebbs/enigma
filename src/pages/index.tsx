@@ -40,8 +40,6 @@ class Machine {
     this.createReflectorTable()
     this.createRotorWiringTables()
     this.resetTransformationLog()
-
-    console.log(this)
   }
 
   resetTransformationLog = function () {
@@ -61,6 +59,8 @@ class Machine {
       exit: null,
     }
 
+    // Doing it this way doesn't work, because we fill the array with references to the
+    // same object, so when we change one of the objects, they all change
     // this.transformationLog.rotors = Array(this.rotors.length).fill({
     //   forwards: {
     //     enter: null,
@@ -72,11 +72,14 @@ class Machine {
     //   },
     // })
 
+    // Is there a better way to do this? this feels dumb
+
+    this.transformationLog.rotors = Array(this.rotors.length)
+
     for (var i = 0; i < this.rotors.length; i++) {
-      this.transformationLog.rotors[i].forwards.enter = null
-      this.transformationLog.rotors[i].forwards.exit = null
-      this.transformationLog.rotors[i].backwards.enter = null
-      this.transformationLog.rotors[i].backwards.exit = null
+      this.transformationLog.rotors[i] = { forwards: null, backwards: null }
+      this.transformationLog.rotors[i].forwards = { enter: null, exit: null }
+      this.transformationLog.rotors[i].backwards = { enter: null, exit: null }
     }
   }
 
