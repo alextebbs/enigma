@@ -6,44 +6,44 @@ export const availableRotors = [
   {
     name: 'I',
     wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ',
-    notch: 'Q',
+    notch: 'R',
     position: 0,
     offset: 0,
   },
   {
     name: 'II',
     wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE',
-    notch: 'E',
+    notch: 'F',
     position: 0,
     offset: 0,
   },
   {
     name: 'III',
     wiring: 'BDFHJLCPRTXVZNYEIWGAKMUSQO',
-    notch: 'V',
+    notch: 'W',
     position: 0,
     offset: 0,
   },
   {
     name: 'IV',
     wiring: 'ESOVPZJAYQUIRHXLNFTGKDCMWB',
-    notch: 'J',
+    notch: 'K',
     position: 0,
     offset: 0,
   },
   {
     name: 'V',
     wiring: 'VZBRGITYUPSDNHLXAWMJQOFECK',
-    notch: 'Z',
+    notch: 'A',
     position: 0,
     offset: 0,
   },
 ]
 
 export const initialRotors = [
-  availableRotors[0],
-  availableRotors[1],
   availableRotors[2],
+  availableRotors[1],
+  availableRotors[0],
 ]
 
 export const availableReflectors = [
@@ -61,4 +61,4 @@ export const availableReflectors = [
   },
 ]
 
-export const initialReflector = availableReflectors[0]
+export const initialReflector = availableReflectors[1]

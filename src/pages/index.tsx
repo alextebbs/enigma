@@ -1,89 +1,241 @@
 import Plugboard from '@/components/dom/Plugboard'
 import IO from '@/components/dom/IO'
-import { useState } from 'react'
-import { initialReflector, initialRotors, ALPHA } from '@/_globals'
+import { useState, useEffect } from 'react'
+import { ALPHA, initialRotors, initialReflector } from '@/_globals'
 import RotorsScene from '@/components/canvas/Rotors'
 
-export default function Page(props) {
-  const [plugboardState, setPlugboardState] = useState({})
-  const [rotors, setRotors] = useState(initialRotors)
-  const [reflector, setReflector] = useState(initialReflector)
-  const [currentPressedKey, setCurrentPressedKey] = useState('')
+interface Rotor {
+  name: string
+  wiring: string
+  notch: string
+  position: number
+  innerRingOffset: number
+  offset: number
+  wireTable?: object
+  inverseWireTable?: object
+}
 
-  const [transformationChain, setTransformationChain] = useState([])
+interface Machine {
+  plugboard: object
+  rotors: Rotor[]
+  reflector: Reflector
+  transformationLog?: object
+}
+
+interface Reflector {
+  name: string
+  wiring: string
+  wireTable?: object
+  inverseWireTable?: object
+}
+
+class Machine {
+  constructor(plugboard, rotors, reflector) {
+    this.plugboard = plugboard
+    this.rotors = rotors
+    this.reflector = reflector
+
+    this.transformationLog = {}
+
+    this.createReflectorTable()
+    this.createRotorWiringTables()
+    this.resetTransformationLog()
+
+    console.log(this)
+  }
+
+  resetTransformationLog = function () {
+    this.transformationLog.plugboard = {
+      forwards: {
+        enter: null,
+        exit: null,
+      },
+      backwards: {
+        enter: null,
+        exit: null,
+      },
+    }
+
+    this.transformationLog.reflector = {
+      enter: null,
+      exit: null,
+    }
+
+    // this.transformationLog.rotors = Array(this.rotors.length).fill({
+    //   forwards: {
+    //     enter: null,
+    //     exit: null,
+    //   },
+    //   backwards: {
+    //     enter: null,
+    //     exit: null,
+    //   },
+    // })
+
+    for (var i = 0; i < this.rotors.length; i++) {
+      this.transformationLog.rotors[i].forwards.enter = null
+      this.transformationLog.rotors[i].forwards.exit = null
+      this.transformationLog.rotors[i].backwards.enter = null
+      this.transformationLog.rotors[i].backwards.exit = null
+    }
+  }
+
+  createRotorWiringTables = function () {
+    this.rotors = this.rotors.map((rotor) => {
+      let newRotor = { ...rotor }
+
+      newRotor.wireTable = {}
+      newRotor.inverseWireTable = {}
+
+      for (var i = 0; i < ALPHA.length; i++) {
+        newRotor.wireTable[ALPHA[i]] = rotor.wiring[i]
+        newRotor.inverseWireTable[rotor.wiring[i]] = ALPHA[i]
+      }
+
+      return newRotor
+    })
+  }
+
+  createReflectorTable = function () {
+    this.reflector.wireTable = {}
+    this.reflector.inverseWireTable = {}
+
+    for (var i = 0; i < ALPHA.length; i++) {
+      this.reflector.wireTable[ALPHA[i]] = this.reflector.wiring[i]
+      this.reflector.inverseWireTable[this.reflector.wiring[i]] = ALPHA[i]
+    }
+  }
+
+  stepRotor = function (rotorIndex) {
+    const newWireTable = {}
+
+    let currentLetter
+    let nextLetter
+
+    for (var i = 0; i < ALPHA.length; i++) {
+      currentLetter = ALPHA[i]
+      nextLetter = ALPHA[(i + 1) % ALPHA.length]
+      newWireTable[currentLetter] =
+        this.rotors[rotorIndex].wireTable[nextLetter]
+    }
+
+    this.rotors[rotorIndex].wireTable = newWireTable
+
+    for (var i = 0; i < ALPHA.length; i++) {
+      let letter = ALPHA[i]
+      let encodedLetter = this.rotors[rotorIndex].wireTable[letter]
+      this.rotors[rotorIndex].inverseWireTable[encodedLetter] = letter
+    }
+
+    this.rotors[rotorIndex].position =
+      (this.rotors[rotorIndex].position + 1) % ALPHA.length
+  }
+
+  encodeChar = function (char) {
+    char = char.toUpperCase()
+    if (!ALPHA.includes(char)) return char
+
+    this.resetTransformationLog()
+
+    this.stepRotor(0)
+
+    if (this.rotors[0].position === ALPHA.indexOf(this.rotors[0].notch)) {
+      this.stepRotor(1)
+    }
+
+    if (this.rotors[1].position === ALPHA.indexOf(this.rotors[1].notch)) {
+      this.stepRotor(2)
+    }
+
+    this.transformationLog.plugboard.forwards.enter = char
+    char = this.plugboard[char] || char
+    this.transformationLog.plugboard.forwards.exit = char
+
+    for (let i = 0; i < this.rotors.length; i++) {
+      this.transformationLog.rotors[i].forwards.enter = char
+      char = this.rotors[i].wireTable[char]
+      char = ALPHA[(ALPHA.indexOf(char) - this.rotors[i].position + 26) % 26]
+      this.transformationLog.rotors[i].forwards.exit = char
+    }
+
+    this.transformationLog.reflector.enter = char
+    char = this.reflector.wireTable[char]
+    this.transformationLog.reflector.exit = char
+
+    for (let i = this.rotors.length - 1; i > -1; i--) {
+      this.transformationLog.rotors[i].backwards.enter = char
+      char = ALPHA[(ALPHA.indexOf(char) + this.rotors[i].position) % 26]
+      char = this.rotors[i].inverseWireTable[char]
+      this.transformationLog.rotors[i].backwards.exit = char
+    }
+
+    this.transformationLog.plugboard.backwards.enter = char
+    char = this.plugboard[char] || char
+    this.transformationLog.plugboard.backwards.exit = char
+
+    return char
+  }
+
+  encodeString = function (string) {
+    return string
+      .split('')
+      .map((char) => this.encodeChar(char))
+      .join('')
+  }
+
+  exportTransformationLog = function () {
+    return this.transformationLog
+  }
+
+  exportMachineState = function () {
+    return {
+      plugboard: this.plugboard,
+      rotors: this.rotors,
+      reflector: this.reflector,
+    }
+  }
+}
+
+export default function Page(props) {
+  const [machineState, setMachineState] = useState({
+    plugboard: {},
+    rotors: initialRotors,
+    reflector: initialReflector,
+  })
+
+  const [transformationLog, setTransformationLog] = useState()
 
   const [plainText, setPlainText] = useState('')
   const [cipherText, setCipherText] = useState('')
 
+  const [currentPressedKey, setCurrentPressedKey] = useState('')
+
   const onTextAreaChange = (e) => {
-    if (e.repeat == true) return
+    let machine = new Machine(
+      machineState.plugboard,
+      initialRotors,
+      initialReflector,
+    )
 
-    let positions = [rotors[0].offset, rotors[1].offset, rotors[2].offset]
-
-    let newCipherText = [...e.target.value].map((c) => {
-      if (ALPHA.indexOf(c.toUpperCase()) === -1) return c
-
-      let newChar = c.toUpperCase()
-      let newTransformationChain = [newChar]
-      setTransformationChain(newTransformationChain)
-
-      const addToTransformationChain = (newTransformation) => {
-        newChar = newTransformation
-        newTransformationChain.push(newChar)
-        setTransformationChain(newTransformationChain)
-      }
-
-      // First through the plugboard
-      addToTransformationChain(plugboardState[newChar] || newChar)
-
-      // Next through the rotors
-      for (let i = 0; i < rotors.length; i++) {
-        let idx = (ALPHA.indexOf(newChar) + positions[i]) % 26
-        console.log(rotors[i].wiring[idx])
-        addToTransformationChain(rotors[i].wiring[idx])
-      }
-
-      // Then through the reflector
-      addToTransformationChain(reflector.wiring[ALPHA.indexOf(newChar)])
-
-      // Then back through the rotors
-      for (let i = rotors.length - 1; i > -1; i--) {
-        let idx = (rotors[i].wiring.indexOf(newChar) - positions[i] + 26) % 26
-        addToTransformationChain(ALPHA[idx])
-      }
-
-      // Finally, back through the plugboard again
-      addToTransformationChain(plugboardState[newChar] || newChar)
-
-      // Rotate the first rotor every time
-      // positions[0] = (positions[0] + 1) % 26
-
-      // // Rotate the second rotor if the first rotor is at its notch
-      // if (rotors[0].wiring[positions[0]] === rotors[0].notch) {
-      //   positions[1] = (positions[1] + 1) % 26
-      // }
-
-      // // Rotate the third rotor if the second rotor is at its notch
-      // if (rotors[1].wiring[positions[1]] === rotors[1].notch) {
-      //   positions[2] = (positions[2] + 1) % 26
-      // }
-
-      console.log(transformationChain)
-
-      return newChar
-    })
-
-    setCipherText(newCipherText.join(''))
+    setCipherText(machine.encodeString(e.target.value))
     setPlainText(e.target.value)
+
+    setMachineState(machine.exportMachineState())
+    setTransformationLog(machine.exportTransformationLog())
   }
 
   return (
     <>
-      <RotorsScene {...{ rotors, currentPressedKey, transformationChain }} />
+      <RotorsScene
+        {...{
+          machineState,
+          transformationLog,
+          currentPressedKey,
+        }}
+      />
 
       <IO
         {...{
-          plugboardState,
           currentPressedKey,
           setCurrentPressedKey,
           onTextAreaChange,
@@ -92,9 +244,7 @@ export default function Page(props) {
         }}
       />
 
-      <Plugboard
-        {...{ currentPressedKey, plugboardState, setPlugboardState }}
-      />
+      <Plugboard {...{ currentPressedKey, machineState, setMachineState }} />
     </>
   )
 }

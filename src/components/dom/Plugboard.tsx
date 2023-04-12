@@ -34,12 +34,10 @@ const getUniquePairings = (plugboardState) => {
  *
  */
 export default function Plugboard({
-  plugboardState,
-  setPlugboardState,
+  machineState,
+  setMachineState,
   currentPressedKey,
 }) {
-  console.log('RENDERING PLUGBOARD')
-
   const [workingKey, setWorkingKey] = useState('')
   const [hoveredKey, setHoveredKey] = useState('')
 
@@ -52,7 +50,6 @@ export default function Plugboard({
   const workingCanvas = useRef(null)
 
   useEffect(() => {
-    console.log('doing useeffect things')
     ;[canvas.current, workingCanvas.current].forEach((el) => {
       el.style.width = '100%'
       el.style.height = '100%'
@@ -62,7 +59,7 @@ export default function Plugboard({
 
     canvasRect.current = workingCanvas.current.getBoundingClientRect()
 
-    drawPlugboardState(plugboardState)
+    drawPlugboardState(machineState.plugboard)
   })
 
   const clearWorkingCanvas = () => {
@@ -75,10 +72,8 @@ export default function Plugboard({
     )
   }
 
-  const drawPlugboardState = (plugboardState) => {
-    const uniquePairs = getUniquePairings(plugboardState)
-
-    console.log('rendering plugboard state')
+  const drawPlugboardState = (plugboard) => {
+    const uniquePairs = getUniquePairings(plugboard)
 
     Object.entries(uniquePairs).forEach((item) => {
       const startEl = document.querySelector(
@@ -146,14 +141,12 @@ export default function Plugboard({
   const onPlugboardKeyClick = (e: MouseEvent) => {
     const thisKey = e.currentTarget as HTMLElement
 
-    console.log('clicked on', thisKey.dataset.key)
-
     if (isEditing.current) {
       isEditing.current = false
 
       if (
         thisKey.dataset.key == workingKey ||
-        thisKey.dataset.key in plugboardState
+        thisKey.dataset.key in machineState.plugboard
       ) {
         clearWorkingCanvas()
         setWorkingKey('')
@@ -161,19 +154,27 @@ export default function Plugboard({
       }
 
       setWorkingKey('')
-      const newPlugboardState = plugboardState
+
+      const newPlugboardState = machineState.plugboard
       newPlugboardState[workingKey] = thisKey.dataset.key
       newPlugboardState[thisKey.dataset.key] = workingKey
-      setPlugboardState(newPlugboardState)
+      setMachineState({
+        ...machineState,
+        plugboard: newPlugboardState,
+      })
+
       return
     }
 
-    if (thisKey.dataset.key in plugboardState) {
+    if (thisKey.dataset.key in machineState.plugboard) {
       isEditing.current = false
-      const newPlugboardState = plugboardState
+      const newPlugboardState = machineState.plugboard
       delete newPlugboardState[newPlugboardState[thisKey.dataset.key]]
       delete newPlugboardState[thisKey.dataset.key]
-      setPlugboardState(newPlugboardState)
+      setMachineState({
+        ...machineState,
+        plugboard: newPlugboardState,
+      })
     }
 
     setWorkingKey(thisKey.dataset.key)
@@ -242,18 +243,18 @@ export default function Plugboard({
                       key={char}
                       char={char}
                       active={
-                        char in plugboardState || workingKey === char
+                        char in machineState.plugboard || workingKey === char
                           ? true
                           : false
                       }
                       working={workingKey === char}
                       hovered={
                         hoveredKey === char ||
-                        plugboardState[char] === hoveredKey
+                        machineState.plugboard[char] === hoveredKey
                       }
                       pressed={
                         currentPressedKey === char ||
-                        plugboardState[char] === currentPressedKey
+                        machineState.plugboard[char] === currentPressedKey
                       }
                       isEditing={isEditing.current}
                       onPlugboardKeyClick={onPlugboardKeyClick}

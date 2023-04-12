@@ -51,7 +51,7 @@ function Reflector() {
   return <mesh />
 }
 
-function Rotor({ rotor, rotorIndex }) {
+function Rotor({ rotor, rotorIndex, machineState, transformationLog }) {
   const inputPoints = getPoints(
     ROTOR_RADIUS * 0.75,
     ALPHA.length,
@@ -63,6 +63,8 @@ function Rotor({ rotor, rotorIndex }) {
     ALPHA.length,
     -ROTOR_WIDTH / 2,
   )
+
+  console.log(transformationLog)
 
   return (
     <group
@@ -84,27 +86,8 @@ function Rotor({ rotor, rotorIndex }) {
 
           return (
             <>
-              {/* <Text
-                rotation={[
-                  0,
-                  THREE.MathUtils.degToRad(
-                    -((360 / ALPHA.length) * index) + 90,
-                  ),
-                  THREE.MathUtils.degToRad(90),
-                ]}
-                position={textPoints[index]}
-                fontSize={0.3}
-                font='/fonts/inconsolata/inconsolata-v31-latin-regular.woff'
-                color={'green'}>
-                {ALPHA[index]}
-              </Text> */}
-
+              {/* STATIC ELEMENTS */}
               <group position={wireStart}>
-                <mesh>
-                  <sphereGeometry args={[0.025, 16, 16]} />
-                  <meshBasicMaterial color={color} />
-                </mesh>
-
                 <Html
                   as='div' // Wrapping element (default: 'div')
                   wrapperClass='pointer-events-none select-none'
@@ -114,6 +97,11 @@ function Rotor({ rotor, rotorIndex }) {
                   position-x={0.15}>
                   <div className='text-gray-500 text-[0.25rem]'>{letter}</div>
                 </Html>
+
+                <mesh>
+                  <sphereGeometry args={[0.025, 16, 16]} />
+                  <meshBasicMaterial color={color} />
+                </mesh>
               </group>
 
               <group position={wireEnd}>
@@ -123,27 +111,36 @@ function Rotor({ rotor, rotorIndex }) {
                 </mesh>
               </group>
 
-              <group>
-                <QuadraticBezierLine
-                  start={centerPoint}
-                  end={wireStart}
-                  color={color}
-                  lineWidth={1}
-                />
+              {/* ROTATING ELEMENTS */}
+              <group
+                rotation={[
+                  0,
+                  machineState.rotors[rotorIndex].position *
+                    ((Math.PI * 2) / ALPHA.length),
+                  0,
+                ]}>
+                <group>
+                  <QuadraticBezierLine
+                    start={centerPoint}
+                    end={wireStart}
+                    color={color}
+                    lineWidth={1}
+                  />
 
-                <QuadraticBezierLine
-                  start={centerPoint}
-                  end={wireEnd}
-                  color={color}
-                  lineWidth={1}
-                />
+                  <QuadraticBezierLine
+                    start={centerPoint}
+                    end={wireEnd}
+                    color={color}
+                    lineWidth={1}
+                  />
 
-                <QuadraticBezierLine
-                  start={wireEnd}
-                  end={nextPoint}
-                  color={color}
-                  lineWidth={1}
-                />
+                  <QuadraticBezierLine
+                    start={wireEnd}
+                    end={nextPoint}
+                    color={color}
+                    lineWidth={1}
+                  />
+                </group>
               </group>
             </>
           )
@@ -154,13 +151,14 @@ function Rotor({ rotor, rotorIndex }) {
 }
 
 export default function RotorsScene({
-  rotors,
+  machineState,
   currentPressedKey,
-  transformationChain,
-  rotorPositions,
+  transformationLog,
 }) {
   const offset =
-    (rotors.length * ROTOR_WIDTH + (rotors.length - 2) * ROTOR_GAP) / 2
+    (machineState.rotors.length * ROTOR_WIDTH +
+      (machineState.rotors.length - 2) * ROTOR_GAP) /
+    2
 
   return (
     <div className='bg-black h-[80vh]'>
@@ -169,7 +167,7 @@ export default function RotorsScene({
         gl={{ antialias: true }}
         camera={{ zoom: 100, near: 1, far: 2000, position: [50, 75, 100] }}>
         <group position={[offset, 0, 0]}>
-          {rotors.map((rotor, rotorIndex) => {
+          {machineState.rotors.map((rotor, rotorIndex) => {
             return (
               <Rotor
                 key={rotorIndex}
@@ -177,8 +175,8 @@ export default function RotorsScene({
                   rotor,
                   rotorIndex,
                   currentPressedKey,
-                  transformationChain,
-                  rotorPositions,
+                  machineState,
+                  transformationLog,
                 }}
               />
             )
