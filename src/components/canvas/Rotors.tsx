@@ -78,12 +78,14 @@ function Reflector({ machineState, transformationLog }) {
         let color = DEFAULT_COLOR
         let className = DEFAULT_CLASS
 
-        if (
-          letter == transformationLog.reflector.enter ||
-          letter == transformationLog.reflector.exit
-        ) {
-          color = MID_COLOR
-          className = MID_CLASS
+        if (transformationLog) {
+          if (
+            letter == transformationLog.reflector.enter ||
+            letter == transformationLog.reflector.exit
+          ) {
+            color = MID_COLOR
+            className = MID_CLASS
+          }
         }
 
         centerPoint.y = centerPoint.y - 1
@@ -253,7 +255,7 @@ export default function RotorsScene({
     2
 
   return (
-    <div className='bg-black h-[80vh]'>
+    <div className='h-[80vh] bg-black'>
       <Canvas
         orthographic
         gl={{ antialias: true }}

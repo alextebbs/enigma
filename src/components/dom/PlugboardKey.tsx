@@ -67,10 +67,10 @@ const PlugboardKey = forwardRef<HTMLDivElement, PlugboardKeyProps>(
         onClick={(e) => onPlugboardKeyClick(e)}
         onMouseEnter={(e) => onPlugboardKeyMouseEnter(e)}
         onMouseLeave={(e) => onPlugboardKeyMouseLeave(e)}
-        className={`plugboardKey cursor-pointer inline-block px-3 mx-1 py-2 pb-3 rounded-lg uppercase font-bold border ${keyStateClasses}`}>
+        className={`plugboardKey mx-1 inline-block cursor-pointer rounded-lg border px-3 py-2 pb-3 font-bold uppercase ${keyStateClasses}`}>
         {char.toLowerCase()}
         <div
-          className={`rounded-full w-3 h-3 border-2 mt-2 ${dotStateClasses}`}></div>
+          className={`mt-2 h-3 w-3 rounded-full border-2 ${dotStateClasses}`}></div>
       </span>
     )
   },

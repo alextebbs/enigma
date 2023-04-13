@@ -214,12 +214,12 @@ export default function Plugboard({
   }
 
   return (
-    <div className='flex align-center justify-center'>
+    <div className='align-center flex justify-center'>
       <div className='relative'>
-        <div className={`absolute w-full h-full pointer-events-none`}>
+        <div className={`pointer-events-none absolute h-full w-full`}>
           <canvas ref={canvas} id='plugboardCanvas'></canvas>
         </div>
-        <div className={`absolute w-full h-full pointer-events-none`}>
+        <div className={`pointer-events-none absolute h-full w-full`}>
           <canvas ref={workingCanvas} id='plugboardWorkingCanvas'></canvas>
         </div>
 
@@ -228,15 +228,15 @@ export default function Plugboard({
           ref={plugboard}
           onMouseMove={(e) => onPlugboardMouseMove(e)}
           className='p-20 pt-10'>
-          <div className='uppercase tracking-[.25em] text-xs text-center text-zinc-400 pb-1'>
+          <div className='pb-1 text-center text-xs uppercase tracking-[.25em] text-zinc-400'>
             Plugboard
           </div>
-          <div className='text-xs text-center text-zinc-400 pb-10'>
+          <div className='pb-10 text-center text-xs text-zinc-400'>
             Click on letters to connect them with wires.
           </div>
           {KEYBOARD_LAYOUT.map((row) => {
             return (
-              <div className='text-center mb-2' key={row}>
+              <div className='mb-2 text-center' key={row}>
                 {row.split('').map((char) => {
                   return (
                     <PlugboardKey

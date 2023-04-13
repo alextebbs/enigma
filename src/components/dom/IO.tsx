@@ -31,27 +31,27 @@ export default function IO({
 
   return (
     <div className='border-b border-gray-600'>
-      <div className='flex align-center justify-center w-full relative'>
+      <div className='align-center relative flex w-full justify-center'>
         <textarea
           onChange={(e) => onTextAreaChange(e)}
           onKeyDown={(e) => onTextAreaKeyDown(e)}
           onKeyUp={(e) => onTextAreaKeyUp(e)}
           value={plainText}
           placeholder='Type a Message here'
-          className='bg-transparent leading-[3rem] whitespace-pre-wrap w-full p-20 h-auto max-w-screen-sm uppercase text-gray-50 focus:border-none focus:outline-none resize-none text-sm'
+          className='h-auto w-full max-w-screen-sm resize-none whitespace-pre-wrap bg-transparent p-20 text-sm uppercase leading-[3rem] text-gray-50 focus:border-none focus:outline-none'
         />
-        <div className='break-words	pointer-events-none leading-[3rem] whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-sm'>
+        <div className='pointer-events-none	absolute h-auto w-full	max-w-screen-sm whitespace-pre-wrap break-words p-20 text-sm uppercase leading-[3rem] focus:border-none focus:outline-none'>
           <span className='text-transparent'>{missingLastLetter}</span>
           <span className='text-yellow-500'>{lastLetter}</span>
         </div>
-        <div className='break-words	pointer-events-none leading-[3rem] top-[1.25rem] text-gray-500 whitespace-pre-wrap	absolute w-full p-20 h-auto max-w-screen-sm uppercase focus:border-none focus:outline-none text-sm'>
+        <div className='pointer-events-none	absolute top-[1.25rem] h-auto w-full max-w-screen-sm	whitespace-pre-wrap break-words p-20 text-sm uppercase leading-[3rem] text-gray-500 focus:border-none focus:outline-none'>
           {cipherMissingLastLetter}
           <span className='text-pink-500'>{cipherLastLetter}</span>
         </div>
       </div>
-      <div className='align-center flex justify-center mb-5'>
+      <div className='align-center mb-5 flex justify-center'>
         <button
-          className='text-sm uppercase border-b'
+          className='border-b text-sm uppercase'
           onClick={(e) => navigator.clipboard.writeText(cipherText)}>
           Copy to clipboard
         </button>
