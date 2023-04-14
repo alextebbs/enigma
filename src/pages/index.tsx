@@ -103,42 +103,38 @@ class Machine {
     this.reflector.wireTable = {}
     this.reflector.inverseWireTable = {}
 
-    for (var i = 0; i < ALPHA.length; i++) {
-      this.reflector.wireTable[ALPHA[i]] = this.reflector.wiring[i]
-      this.reflector.inverseWireTable[this.reflector.wiring[i]] = ALPHA[i]
-    }
+    ALPHA.forEach((char, i) => {
+      this.reflector.wireTable[char] = this.reflector.wiring[i]
+      this.reflector.inverseWireTable[this.reflector.wiring[i]] = char
+    })
   }
 
   stepRotor = function (rotorIndex) {
     const newWireTable = {}
+    const thisRotor = this.rotors[rotorIndex]
 
     let currentLetter
     let nextLetter
 
-    for (var i = 0; i < ALPHA.length; i++) {
-      currentLetter = ALPHA[i]
+    ALPHA.forEach((char, i) => {
+      currentLetter = char
       nextLetter = ALPHA[(i + 1) % ALPHA.length]
-      newWireTable[currentLetter] =
-        this.rotors[rotorIndex].wireTable[nextLetter]
-    }
+      newWireTable[currentLetter] = thisRotor.wireTable[nextLetter]
+    })
 
-    this.rotors[rotorIndex].wireTable = newWireTable
+    thisRotor.wireTable = newWireTable
 
-    for (var i = 0; i < ALPHA.length; i++) {
-      let letter = ALPHA[i]
-      let encodedLetter = this.rotors[rotorIndex].wireTable[letter]
-      this.rotors[rotorIndex].inverseWireTable[encodedLetter] = letter
-    }
+    ALPHA.forEach((char, i) => {
+      let encodedLetter = thisRotor.wireTable[char]
+      thisRotor.inverseWireTable[encodedLetter] = char
+    })
 
-    this.rotors[rotorIndex].position =
-      (this.rotors[rotorIndex].position + 1) % ALPHA.length
+    thisRotor.position = (thisRotor.position + 1) % ALPHA.length
   }
 
   encodeChar = function (char) {
     char = char.toUpperCase()
     if (!ALPHA.includes(char)) return char
-
-    this.resetTransformationLog()
 
     this.stepRotor(0)
 
@@ -222,7 +218,6 @@ export default function Page(props) {
 
     setCipherText(machine.encodeString(e.target.value))
     setPlainText(e.target.value)
-
     setMachineState(machine.exportMachineState())
     setTransformationLog(machine.exportTransformationLog())
   }
