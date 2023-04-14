@@ -228,7 +228,7 @@ export default function Plugboard({
   }
 
   return (
-    <div className='align-center flex justify-center'>
+    <div className='flex justify-center'>
       <div className='relative'>
         <div className={`pointer-events-none absolute h-full w-full`}>
           <canvas ref={canvas} id='plugboardCanvas'></canvas>
