@@ -2,6 +2,8 @@
 
 Enigma emulator and visualizer using three.js to simulate internal workings of Enigma Machine rotors.
 
+[View it live](https://enigma-alextebbs.vercel.app/)
+
 Some of the tech this project uses:
 
 - [Three.js](https://threejs.org/)
