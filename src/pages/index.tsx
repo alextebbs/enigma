@@ -18,11 +18,11 @@ export default function Page() {
   const [cipherText, setCipherText] = useState('')
 
   const onTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    let machine = new Machine(
-      machineState.plugboard,
-      initialRotors,
-      initialReflector,
-    )
+    let machine = new Machine({
+      plugboard: machineState.plugboard,
+      rotors: initialRotors,
+      reflector: initialReflector,
+    })
 
     setCipherText(machine.encodeString(e.target.value))
     setPlainText(e.target.value)

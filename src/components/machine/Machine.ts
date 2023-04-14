@@ -6,7 +6,7 @@ export default class Machine implements MachineState {
   reflector: Reflector
   transformationLog?: Log
 
-  constructor(plugboard, rotors, reflector) {
+  constructor({ plugboard, rotors, reflector }) {
     this.plugboard = plugboard
     this.rotors = rotors
     this.reflector = reflector
@@ -115,6 +115,7 @@ export default class Machine implements MachineState {
     }
 
     if (this.rotors[1].position === ALPHA.indexOf(this.rotors[1].notch)) {
+      this.turnRotor(1)
       this.turnRotor(2)
     }
 

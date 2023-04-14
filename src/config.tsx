@@ -1,9 +1,9 @@
 import Head from 'next/head'
 
 const titleDefault = 'Enigma'
-const url = 'https://react-three-next.vercel.app/'
+const url = 'https://enigma-alextebbs.vercel.app/'
 const description =
-  'The easiest and fastest way to create a 3D website using React Three Fiber and NextJS'
+  'Enigma machine emulator and visualizer built with React and Three.js'
 const author = 'Alex Tebbs'
 
 export default function Header({ title = titleDefault }) {
