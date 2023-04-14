@@ -79,7 +79,7 @@ export default function PlugboardKey({
       data-key={char}
       onClick={(e) => onPlugboardKeyClick(e)}
       onMouseEnter={(e) => onPlugboardKeyMouseEnter(e)}
-      onMouseLeave={(e) => onPlugboardKeyMouseLeave(e)}
+      onMouseLeave={() => onPlugboardKeyMouseLeave()}
       className={`mx-1 inline-block cursor-pointer rounded-lg border px-3 py-2 pb-3 font-bold uppercase ${keyStateClasses}`}>
       {char.toLowerCase()}
       <div

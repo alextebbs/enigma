@@ -46,7 +46,6 @@ export default function Plugboard({
   const workingBezierStart = useRef(null)
   const canvasRect = useRef(null)
 
-  const plugboard = useRef(null)
   const canvas = useRef(null)
   const workingCanvas = useRef(null)
 
@@ -152,8 +151,8 @@ export default function Plugboard({
     ctx.stroke()
   }
 
-  const onPlugboardKeyClick = (e: MouseEvent) => {
-    const thisKey = e.currentTarget as HTMLElement
+  const onPlugboardKeyClick = (e: React.MouseEvent<HTMLElement>) => {
+    const thisKey = e.currentTarget
 
     if (isEditing.current) {
       isEditing.current = false
@@ -203,7 +202,7 @@ export default function Plugboard({
     isEditing.current = true
   }
 
-  const onPlugboardMouseMove = (e) => {
+  const onPlugboardMouseMove = (e: React.MouseEvent) => {
     if (!isEditing.current) return
 
     clearWorkingCanvas()
@@ -218,12 +217,12 @@ export default function Plugboard({
     )
   }
 
-  const onPlugboardKeyMouseEnter = (e) => {
-    const thisKey = e.currentTarget as HTMLElement
+  const onPlugboardKeyMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    const thisKey = e.currentTarget
     setHoveredKey(thisKey.dataset.key)
   }
 
-  const onPlugboardKeyMouseLeave = (e) => {
+  const onPlugboardKeyMouseLeave = () => {
     setHoveredKey(null)
   }
 
@@ -239,7 +238,6 @@ export default function Plugboard({
 
         <div
           id='plugboard'
-          ref={plugboard}
           onMouseMove={(e) => onPlugboardMouseMove(e)}
           className='p-20'>
           {KEYBOARD_LAYOUT.map((row) => {

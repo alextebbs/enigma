@@ -1,45 +1,7 @@
 import { ALPHA } from '@/_globals'
 
-interface Rotor {
-  name: string
-  wiring: string
-  notch: string
-  position: number
-  innerRingOffset: number
-  offset: number
-  wireTable?: object
-  inverseWireTable?: object
-}
-
-interface Log {
-  plugboard: LogItem
-  rotors: LogItem[]
-  reflector: {
-    enter: string
-    exit: string
-  }
-}
-
-interface LogItem {
-  forwards: {
-    enter: string
-    exit: string
-  }
-  backwards: {
-    enter: string
-    exit: string
-  }
-}
-
-interface Reflector {
-  name: string
-  wiring: string
-  wireTable?: object
-  inverseWireTable?: object
-}
-
-export default class Machine {
-  plugboard: object
+export default class Machine implements MachineState {
+  plugboard: WireTable
   rotors: Rotor[]
   reflector: Reflector
   transformationLog?: Log
@@ -67,20 +29,23 @@ export default class Machine {
       },
     }
 
-    // Doing it this way doesn't work, because we fill the array with references to the
-    // same object, so when we change one of the objects, they all change
-    // this.transformationLog.rotors = Array(this.rotors.length).fill({
-    //   forwards: {
-    //     enter: null,
-    //     exit: null,
-    //   },
-    //   backwards: {
-    //     enter: null,
-    //     exit: null,
-    //   },
-    // })
-    //
-    // Is there a better way to do this? This feels dumb.
+    /* Doing it this way doesn't work, because we fill the array with 
+    references to the same object, so when we change one of the objects, 
+    they all change 
+
+    this.transformationLog.rotors = Array(this.rotors.length).fill({
+      forwards: {
+        enter: null,
+        exit: null,
+      },
+      backwards: {
+        enter: null,
+        exit: null,
+      },
+    })
+    
+    Is there a better way to do this? This feels dumb.  */
+
     for (let i = 0; i < this.rotors.length; i++) {
       this.transformationLog.rotors[i] = { forwards: null, backwards: null }
       this.transformationLog.rotors[i].forwards = { enter: null, exit: null }
@@ -193,7 +158,7 @@ export default class Machine {
     return this.transformationLog
   }
 
-  exportMachineState = function () {
+  exportMachineState = function (): MachineState {
     return {
       plugboard: this.plugboard,
       rotors: this.rotors,

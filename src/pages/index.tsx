@@ -1,13 +1,13 @@
 import Plugboard from '@/components/dom/Plugboard'
 import IO from '@/components/dom/IO'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { initialRotors, initialReflector } from '@/_globals'
 import RotorsScene from '@/components/canvas/RotorScene'
 import PanelHeader from '@/components/dom/PanelHeader'
 import Machine from '@/components/machine/Machine'
 
-export default function Page(props) {
-  const [machineState, setMachineState] = useState({
+export default function Page() {
+  const [machineState, setMachineState] = useState<MachineState>({
     plugboard: {},
     rotors: initialRotors,
     reflector: initialReflector,
@@ -17,7 +17,7 @@ export default function Page(props) {
   const [plainText, setPlainText] = useState('')
   const [cipherText, setCipherText] = useState('')
 
-  const onTextAreaChange = (e) => {
+  const onTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     let machine = new Machine(
       machineState.plugboard,
       initialRotors,
