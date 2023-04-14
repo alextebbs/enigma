@@ -132,7 +132,15 @@ export default class Machine {
   }
 
   encodeChar = function (char) {
+    let isLowercase = false
+
+    if (char == char.toLowerCase()) {
+      char.toUpperCase()
+      isLowercase = true
+    }
+
     char = char.toUpperCase()
+
     if (!ALPHA.includes(char)) return char
 
     this.turnRotor(0)
@@ -171,7 +179,7 @@ export default class Machine {
     char = this.plugboard[char] || char
     this.transformationLog.plugboard.backwards.exit = char
 
-    return char
+    return isLowercase ? char.toLowerCase() : char
   }
 
   encodeString = function (string) {

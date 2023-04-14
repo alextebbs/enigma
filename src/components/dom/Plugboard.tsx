@@ -36,7 +36,7 @@ const getUniquePairings = (plugboardState) => {
 export default function Plugboard({
   machineState,
   setMachineState,
-  currentPressedKey,
+  transformationLog,
 }) {
   const [workingKey, setWorkingKey] = useState('')
   const [hoveredKey, setHoveredKey] = useState('')
@@ -48,6 +48,14 @@ export default function Plugboard({
   const plugboard = useRef(null)
   const canvas = useRef(null)
   const workingCanvas = useRef(null)
+
+  let forwardsKey = null
+  let backwardsKey = null
+
+  if (transformationLog) {
+    forwardsKey = transformationLog.plugboard.forwards.enter
+    backwardsKey = transformationLog.plugboard.backwards.enter
+  }
 
   useEffect(() => {
     ;[canvas.current, workingCanvas.current].forEach((el) => {
@@ -101,18 +109,23 @@ export default function Plugboard({
       let color
 
       if (
-        startEl.dataset.key == currentPressedKey ||
-        endEl.dataset.key == currentPressedKey
+        startEl.dataset.key == forwardsKey ||
+        endEl.dataset.key == forwardsKey
       ) {
-        color = colors.yellow[300]
+        color = colors.yellow[500]
       } else if (
-        (startEl.dataset.key == hoveredKey ||
-          endEl.dataset.key == hoveredKey) &&
-        !isEditing.current
+        startEl.dataset.key == backwardsKey ||
+        endEl.dataset.key == backwardsKey
       ) {
-        color = colors.blue[400]
+        color = colors.pink[500]
+      } else if (
+        (startEl.dataset.key == backwardsKey ||
+          endEl.dataset.key == backwardsKey) &&
+        (startEl.dataset.key == forwardsKey || endEl.dataset.key == forwardsKey)
+      ) {
+        color = '#eb7e51'
       } else {
-        color = 'white'
+        color = colors.white
       }
 
       drawBezier(canvas.current.getContext('2d'), bezierStart, bezierEnd, color)
@@ -149,11 +162,11 @@ export default function Plugboard({
         thisKey.dataset.key in machineState.plugboard
       ) {
         clearWorkingCanvas()
-        setWorkingKey('')
+        setWorkingKey(null)
         return
       }
 
-      setWorkingKey('')
+      setWorkingKey(null)
 
       const newPlugboardState = machineState.plugboard
       newPlugboardState[workingKey] = thisKey.dataset.key
@@ -210,7 +223,7 @@ export default function Plugboard({
   }
 
   const onPlugboardKeyMouseLeave = (e) => {
-    setHoveredKey('')
+    setHoveredKey(null)
   }
 
   return (
@@ -227,13 +240,7 @@ export default function Plugboard({
           id='plugboard'
           ref={plugboard}
           onMouseMove={(e) => onPlugboardMouseMove(e)}
-          className='p-20 pt-10'>
-          <div className='pb-1 text-center text-xs uppercase tracking-[.25em] text-zinc-400'>
-            Plugboard
-          </div>
-          <div className='pb-10 text-center text-xs text-zinc-400'>
-            Click on letters to connect them with wires.
-          </div>
+          className='p-20'>
           {KEYBOARD_LAYOUT.map((row) => {
             return (
               <div className='mb-2 text-center' key={row}>
@@ -241,25 +248,18 @@ export default function Plugboard({
                   return (
                     <PlugboardKey
                       key={char}
-                      char={char}
-                      active={
-                        char in machineState.plugboard || workingKey === char
-                          ? true
-                          : false
-                      }
-                      working={workingKey === char}
-                      hovered={
-                        hoveredKey === char ||
-                        machineState.plugboard[char] === hoveredKey
-                      }
-                      pressed={
-                        currentPressedKey === char ||
-                        machineState.plugboard[char] === currentPressedKey
-                      }
-                      isEditing={isEditing.current}
-                      onPlugboardKeyClick={onPlugboardKeyClick}
-                      onPlugboardKeyMouseEnter={onPlugboardKeyMouseEnter}
-                      onPlugboardKeyMouseLeave={onPlugboardKeyMouseLeave}
+                      {...{
+                        plugboard: machineState.plugboard,
+                        isEditing,
+                        char,
+                        onPlugboardKeyClick,
+                        onPlugboardKeyMouseEnter,
+                        onPlugboardKeyMouseLeave,
+                        forwardsKey,
+                        backwardsKey,
+                        hoveredKey,
+                        workingKey,
+                      }}
                     />
                   )
                 })}
