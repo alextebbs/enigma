@@ -17,7 +17,7 @@ export default function IO({ plainText, cipherText, onTextAreaChange }) {
 
   return (
     <div className='h-full border-b border-slate-900'>
-      <div className='align-center relative flex h-full w-full justify-center'>
+      <div className='relative flex h-full w-full justify-center'>
         <textarea
           onChange={(e) => onTextAreaChange(e)}
           onKeyDown={(e) => onTextAreaKeyDown(e)}
@@ -34,7 +34,7 @@ export default function IO({ plainText, cipherText, onTextAreaChange }) {
           <span className='text-pink-500'>{cipherLastLetter}</span>
         </div>
       </div>
-      {/* <div className='align-center mb-5 flex justify-center'>
+      {/* <div className='mb-5 flex justify-center'>
         <button
           className='border-b text-sm'
           onClick={(e) => navigator.clipboard.writeText(cipherText)}>

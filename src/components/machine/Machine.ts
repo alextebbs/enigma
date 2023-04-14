@@ -81,7 +81,7 @@ export default class Machine {
     // })
     //
     // Is there a better way to do this? This feels dumb.
-    for (var i = 0; i < this.rotors.length; i++) {
+    for (let i = 0; i < this.rotors.length; i++) {
       this.transformationLog.rotors[i] = { forwards: null, backwards: null }
       this.transformationLog.rotors[i].forwards = { enter: null, exit: null }
       this.transformationLog.rotors[i].backwards = { enter: null, exit: null }

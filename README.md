@@ -1,3 +1,3 @@
-# enigma
+# Enigma
 
-This project was bootstrapped with [`create-r3f-app`](https://github.com/utsuboco/create-r3f-app)
+Enigma simulator using three.js to simulate internal workings of Enigma Machine rotors.

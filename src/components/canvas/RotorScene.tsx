@@ -24,7 +24,8 @@ export const RETURN_CLASS = 'text-pink-500'
 export const DEFAULT_CLASS = 'text-gray-500'
 export const MID_CLASS = 'text-[#eb7e51]'
 
-export const getPoints = (radius, count, offset) => {
+// Get a series of points along a circle, and give them an optional Y axis offset
+export const getPoints = (radius, count, offset = 0) => {
   const points = []
   for (let i = 0; i < count; i++) {
     const angle = (i / count) * Math.PI * 2
@@ -39,7 +40,6 @@ export const getPoints = (radius, count, offset) => {
   return points
 }
 
-// Find the center between two points in 3d space
 export const getCenterPoint = (pointA, pointB) => {
   return new THREE.Vector3(
     (pointA.x + pointB.x) / 2,
@@ -51,13 +51,13 @@ export const getCenterPoint = (pointA, pointB) => {
 export function TextLabel({ letter, extraClass, color }) {
   return (
     <Html
-      as='div' // Wrapping element (default: 'div')
-      wrapperClass='pointer-events-none select-none'
-      center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
-      transform // If true, applies matrix3d transformations (default=false)
-      sprite // Renders as sprite, but only in transform mode (default=false)
+      as='div'
+      wrapperClass={`pointer-events-none select-none text-[0.25rem] ${extraClass}`}
+      center
+      transform
+      sprite
       position-x={0.15}>
-      <div className={`${extraClass} text-[0.25rem]`}>{letter}</div>
+      {letter}
     </Html>
   )
 }
@@ -99,8 +99,10 @@ export default function RotorsScene({ machineState, transformationLog }) {
         <Reflector {...{ machineState, transformationLog }} />
       </group>
 
+      {/* where we're going, we don't need lights 
       <directionalLight intensity={0.75} />
-      <ambientLight intensity={0.75} />
+      <ambientLight intensity={0.75} />*/}
+
       <OrbitControls makeDefault />
     </Canvas>
   )

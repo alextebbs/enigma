@@ -26,11 +26,12 @@ const getUniquePairings = (plugboardState) => {
 }
 
 /**
- * The plugboard component
+ * The plugboard allows specific character pairs to be swapped, and contains
+ * the functionality for editing these character pairs.
  *
- * @param plugboardState The current state of the plugboard
- * @param setPlugboardState The function to update the plugboard state
- * @param currentPressedKey The current key that is being pressed
+ * @param machineState The current state of the machine
+ * @param setMachineState Function to update the machine's state
+ * @param transformationLog The history of the machine's transformations
  *
  */
 export default function Plugboard({

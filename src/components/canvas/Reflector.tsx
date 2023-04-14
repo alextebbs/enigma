@@ -16,7 +16,7 @@ import {
 } from './RotorScene'
 
 export default function Reflector({ machineState, transformationLog }) {
-  const reflectorPoints = getPoints(ROTOR_RADIUS * 0.75, ALPHA.length, 0)
+  const reflectorPoints = getPoints(ROTOR_RADIUS * 0.75, ALPHA.length)
 
   return (
     <group

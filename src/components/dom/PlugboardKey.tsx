@@ -80,7 +80,7 @@ export default function PlugboardKey({
       onClick={(e) => onPlugboardKeyClick(e)}
       onMouseEnter={(e) => onPlugboardKeyMouseEnter(e)}
       onMouseLeave={(e) => onPlugboardKeyMouseLeave(e)}
-      className={`plugboardKey mx-1 inline-block cursor-pointer rounded-lg border px-3 py-2 pb-3 font-bold uppercase ${keyStateClasses}`}>
+      className={`mx-1 inline-block cursor-pointer rounded-lg border px-3 py-2 pb-3 font-bold uppercase ${keyStateClasses}`}>
       {char.toLowerCase()}
       <div
         className={`mt-2 h-3 w-3 rounded-full border-2 ${dotStateClasses}`}></div>
