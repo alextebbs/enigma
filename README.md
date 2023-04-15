@@ -13,8 +13,21 @@ Some of the tech this project uses:
 - [React](https://react.dev/)
 - [Tailwind](https://tailwindcss.com/)
 
-Credits & References:
+## Credits & References:
 
 - [YouTube: How did the Enigma machine work?](https://www.youtube.com/watch?v=ybkkiGtJmkM)
 - [Wikipedia: Enigma machine](https://en.wikipedia.org/wiki/Enigma_machine)
 - [Engima machine in Javascript by Matheus Portela](https://github.com/matheusportela/enigma-machine)
+
+## TODO
+
+- Mobile
+- Add morse code feature
+- Better visualize the connections between modules using colored lines
+- Add settings panes
+- Make plugboard collapsible
+- BUG: IO panel should only highlight last alphabetic character.
+- Show actual rotors, not just wiring
+- Curve connections on the reflector should be more fluid
+- Reflector path should draw a gradient between color A and B
+- Add intro animation

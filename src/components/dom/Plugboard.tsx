@@ -11,7 +11,7 @@ const {
 
 type Point = [x: number, y: number]
 
-const getUniquePairings = (plugboardState) => {
+export const getUniquePairings = (plugboardState) => {
   const uniquePairs = {}
 
   for (const key in plugboardState) {
@@ -43,11 +43,11 @@ export default function Plugboard({
   const [hoveredKey, setHoveredKey] = useState('')
 
   const isEditing = useRef(false)
-  const workingBezierStart = useRef(null)
-  const canvasRect = useRef(null)
+  const workingBezierStart = useRef<Point>(null)
+  const canvasRect = useRef<DOMRect>(null)
 
-  const canvas = useRef(null)
-  const workingCanvas = useRef(null)
+  const canvas = useRef<HTMLCanvasElement>(null)
+  const workingCanvas = useRef<HTMLCanvasElement>(null)
 
   let forwardsKey = null
   let backwardsKey = null
@@ -84,12 +84,12 @@ export default function Plugboard({
     const uniquePairs = getUniquePairings(plugboard)
 
     Object.entries(uniquePairs).forEach((item) => {
-      const startEl = document.querySelector(
+      const startEl = document.querySelector<HTMLElement>(
         `[data-key="${item[0]}"]`,
-      ) as HTMLElement
-      const endEl = document.querySelector(
+      )
+      const endEl = document.querySelector<HTMLElement>(
         `[data-key="${item[1]}"]`,
-      ) as HTMLElement
+      )
 
       const startRect = startEl.children[0].getBoundingClientRect()
       const endRect = endEl.children[0].getBoundingClientRect()
@@ -109,6 +109,12 @@ export default function Plugboard({
       let color
 
       if (
+        (startEl.dataset.key == backwardsKey ||
+          endEl.dataset.key == backwardsKey) &&
+        (startEl.dataset.key == forwardsKey || endEl.dataset.key == forwardsKey)
+      ) {
+        color = '#eb7e51'
+      } else if (
         startEl.dataset.key == forwardsKey ||
         endEl.dataset.key == forwardsKey
       ) {
@@ -118,12 +124,6 @@ export default function Plugboard({
         endEl.dataset.key == backwardsKey
       ) {
         color = colors.pink[500]
-      } else if (
-        (startEl.dataset.key == backwardsKey ||
-          endEl.dataset.key == backwardsKey) &&
-        (startEl.dataset.key == forwardsKey || endEl.dataset.key == forwardsKey)
-      ) {
-        color = '#eb7e51'
       } else {
         color = colors.white
       }
@@ -239,7 +239,7 @@ export default function Plugboard({
         <div
           id='plugboard'
           onMouseMove={(e) => onPlugboardMouseMove(e)}
-          className='p-20'>
+          className='p-10'>
           {KEYBOARD_LAYOUT.map((row) => {
             return (
               <div className='mb-2 text-center' key={row}>

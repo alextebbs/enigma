@@ -25,8 +25,13 @@ export const DEFAULT_CLASS = 'text-gray-500'
 export const MID_CLASS = 'text-[#eb7e51]'
 
 // Get a series of points along a circle, and give them an optional Y axis offset
-export const getPoints = (radius, count, offset = 0) => {
-  const points = []
+export const getPoints = (
+  radius: number,
+  count: number,
+  offset: number = 0,
+) => {
+  const points: THREE.Vector3[] = []
+
   for (let i = 0; i < count; i++) {
     const angle = (i / count) * Math.PI * 2
     points.push(
@@ -40,7 +45,10 @@ export const getPoints = (radius, count, offset = 0) => {
   return points
 }
 
-export const getCenterPoint = (pointA, pointB) => {
+export const getCenterPoint = (
+  pointA: THREE.Vector3,
+  pointB: THREE.Vector3,
+) => {
   return new THREE.Vector3(
     (pointA.x + pointB.x) / 2,
     (pointA.y + pointB.y) / 2,
@@ -81,6 +89,7 @@ export default function RotorsScene({ machineState, transformationLog }) {
     <Canvas
       orthographic
       gl={{ antialias: true }}
+      className='h-full'
       camera={{ zoom: 100, near: 1, far: 2000, position: [50, 75, 100] }}>
       <group position={[offset, 0, 0]}>
         {machineState.rotors.map((rotor, rotorIndex) => {

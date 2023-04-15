@@ -9,6 +9,10 @@ import {
   DEFAULT_COLOR,
   MID_CLASS,
   MID_COLOR,
+  ACTIVE_CLASS,
+  ACTIVE_COLOR,
+  RETURN_CLASS,
+  RETURN_COLOR,
   getPoints,
   getCenterPoint,
   Dot,
@@ -17,6 +21,7 @@ import {
 
 export default function Reflector({ machineState, transformationLog }) {
   const reflectorPoints = getPoints(ROTOR_RADIUS * 0.75, ALPHA.length)
+  let drawnPoints = []
 
   return (
     <group
@@ -36,23 +41,38 @@ export default function Reflector({ machineState, transformationLog }) {
         const wireEnd =
           reflectorPoints[ALPHA.indexOf(machineState.reflector.wiring[index])]
         const centerPoint = getCenterPoint(wireStart, wireEnd)
+        centerPoint.y = centerPoint.y - 1
+
+        drawnPoints.push(machineState.reflector.wiring[index])
 
         let color = DEFAULT_COLOR
+        let dotColor = DEFAULT_COLOR
         let className = DEFAULT_CLASS
         let lineWidth = 1
+
+        console.log(drawnPoints)
 
         if (transformationLog) {
           if (
             letter == transformationLog.reflector.enter ||
             letter == transformationLog.reflector.exit
           ) {
-            color = MID_COLOR
-            className = MID_CLASS
+            dotColor = MID_COLOR
             lineWidth = 2
+          }
+
+          if (letter == transformationLog.reflector.enter) {
+            color = ACTIVE_COLOR
+            className = ACTIVE_CLASS
+          }
+
+          if (letter == transformationLog.reflector.exit) {
+            color = RETURN_COLOR
+            className = RETURN_CLASS
           }
         }
 
-        centerPoint.y = centerPoint.y - 1
+        centerPoint.y = centerPoint.y + 0.3
 
         return (
           <>
@@ -61,13 +81,18 @@ export default function Reflector({ machineState, transformationLog }) {
               <Dot color={color} />
             </group>
 
-            <QuadraticBezierLine
-              start={wireStart}
-              end={wireEnd}
-              mid={centerPoint}
-              lineWidth={lineWidth}
-              color={color}
-            />
+            <>
+              <group position={centerPoint}>
+                <Dot color={dotColor} />
+              </group>
+
+              <QuadraticBezierLine
+                start={centerPoint}
+                end={wireStart}
+                lineWidth={lineWidth}
+                color={color}
+              />
+            </>
           </>
         )
       })}
