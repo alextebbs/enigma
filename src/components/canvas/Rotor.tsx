@@ -16,10 +16,10 @@ import {
   Dot,
   TextLabel,
 } from './RotorScene'
-import { ThreeElements, useFrame } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 
-export default function Rotor({ rotor, rotorIndex, transformationLog }) {
+export default function Rotor({ rotor, rotorIndex, rotorLog }) {
   const inputPoints = getPoints(
     ROTOR_RADIUS * 0.75,
     ALPHA.length,
@@ -38,14 +38,14 @@ export default function Rotor({ rotor, rotorIndex, transformationLog }) {
     (360 / ALPHA.length) * rotor.position,
   )
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (rotorRef.current) {
       if (rotorRef.current.rotation.y < targetAngle) {
-        rotorRef.current.rotation.y += 0.05
+        rotorRef.current.rotation.y += 2 * delta
       }
 
       if (rotorRef.current.rotation.y > targetAngle) {
-        rotorRef.current.rotation.y -= 0.05
+        rotorRef.current.rotation.y -= 2 * delta
       }
     }
   })
@@ -100,7 +100,7 @@ export default function Rotor({ rotor, rotorIndex, transformationLog }) {
                 color={'#334155'}
                 font={'/fonts/inconsolata/inconsolata-v31-latin-regular.woff'}
                 characters={ALPHA.join('')}>
-                {letter}
+                {index + 1}
               </Text>
             </group>
           )
@@ -119,35 +119,41 @@ export default function Rotor({ rotor, rotorIndex, transformationLog }) {
         let className = DEFAULT_CLASS
         let lineWidth = 1
 
-        if (transformationLog) {
-          const log = transformationLog.rotors[rotorIndex]
-          const letterToCheck =
-            ALPHA[
-              (ALPHA.indexOf(letter) - rotor.position + ALPHA.length) %
-                ALPHA.length
-            ]
+        console.log(rotorLog)
 
-          if (log.forwards.enter == letterToCheck) {
-            color = ACTIVE_COLOR
-            lineWidth = 2
-          } else if (log.backwards.exit == letterToCheck) {
-            color = RETURN_COLOR
-            lineWidth = 2
-          }
+        const letterToCheck =
+          ALPHA[
+            (ALPHA.indexOf(letter) - rotor.position + ALPHA.length) %
+              ALPHA.length
+          ]
 
-          if (log.forwards.enter == letter) {
-            className = ACTIVE_CLASS
-          } else if (log.backwards.exit == letter) {
-            className = RETURN_CLASS
-          }
+        if (rotorLog?.forwards.enter == letterToCheck) {
+          color = ACTIVE_COLOR
+          lineWidth = 2
+        } else if (rotorLog?.backwards.exit == letterToCheck) {
+          color = RETURN_COLOR
+          lineWidth = 2
+        }
+
+        if (rotorLog?.forwards.enter == letter) {
+          className = ACTIVE_CLASS
+        } else if (rotorLog?.backwards.exit == letter) {
+          className = RETURN_CLASS
         }
 
         return (
           <>
             {/* STATIC ELEMENTS */}
-            <group position={wireStart}>
-              <TextLabel letter={letter} extraClass={className} color={color} />
-            </group>
+            {(rotorLog?.forwards.enter == letter ||
+              rotorLog?.backwards.exit == letter) && (
+              <group position={wireStart}>
+                <TextLabel
+                  letter={letter}
+                  extraClass={className}
+                  color={color}
+                />
+              </group>
+            )}
 
             {/* ROTATING ELEMENTS */}
             <group

@@ -19,7 +19,7 @@ import {
   TextLabel,
 } from './RotorScene'
 
-export default function Reflector({ machineState, transformationLog }) {
+export default function Reflector({ machineState, reflectorLog }) {
   const reflectorPoints = getPoints(ROTOR_RADIUS * 0.75, ALPHA.length)
   let drawnPoints = []
 
@@ -50,34 +50,36 @@ export default function Reflector({ machineState, transformationLog }) {
         let className = DEFAULT_CLASS
         let lineWidth = 1
 
-        if (transformationLog) {
-          if (
-            letter == transformationLog.reflector.enter ||
-            letter == transformationLog.reflector.exit
-          ) {
-            dotColor = MID_COLOR
-            lineWidth = 2
-          }
+        if (letter == reflectorLog?.enter || letter == reflectorLog?.exit) {
+          dotColor = MID_COLOR
+          lineWidth = 2
+        }
 
-          if (letter == transformationLog.reflector.enter) {
-            color = ACTIVE_COLOR
-            className = ACTIVE_CLASS
-          }
+        if (letter == reflectorLog?.enter) {
+          color = ACTIVE_COLOR
+          className = ACTIVE_CLASS
+        }
 
-          if (letter == transformationLog.reflector.exit) {
-            color = RETURN_COLOR
-            className = RETURN_CLASS
-          }
+        if (letter == reflectorLog?.exit) {
+          color = RETURN_COLOR
+          className = RETURN_CLASS
         }
 
         centerPoint.y = centerPoint.y + 0.3
 
         return (
           <>
-            <group position={wireStart}>
-              <TextLabel letter={letter} extraClass={className} color={color} />
-              <Dot color={color} />
-            </group>
+            {(reflectorLog?.enter == letter ||
+              reflectorLog?.exit == letter) && (
+              <group position={wireStart}>
+                <TextLabel
+                  letter={letter}
+                  extraClass={className}
+                  color={color}
+                />
+                <Dot color={color} />
+              </group>
+            )}
 
             <>
               <group position={centerPoint}>

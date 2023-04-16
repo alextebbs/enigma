@@ -5,7 +5,6 @@ import { initialRotors, initialReflector } from '@/_globals'
 import RotorsScene from '@/components/canvas/RotorScene'
 import PanelHeader from '@/components/dom/PanelHeader'
 import Machine from '@/components/machine/Machine'
-import { BiChevronDown } from 'react-icons/bi'
 
 export default function Page() {
   const [machineState, setMachineState] = useState<MachineState>({
@@ -83,6 +82,7 @@ export default function Page() {
         </div>
         <div className='relative border border-slate-800 bg-black'>
           <PanelHeader title='Plugboard' />
+
           <Plugboard
             {...{ machineState, transformationLog, setMachineState }}
           />

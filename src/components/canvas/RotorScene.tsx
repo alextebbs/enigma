@@ -12,7 +12,7 @@ const {
 
 export const ROTOR_RADIUS = 3
 export const ROTOR_WIDTH = 1.5
-export const ROTOR_GAP = 1
+export const ROTOR_GAP = 0.75
 
 export const ACTIVE_COLOR = colors.yellow['500']
 export const RETURN_COLOR = colors.pink['500']
@@ -100,12 +100,14 @@ export default function RotorsScene({ machineState, transformationLog }) {
               {...{
                 rotor,
                 rotorIndex,
-                transformationLog,
+                rotorLog: transformationLog?.rotors[rotorIndex],
               }}
             />
           )
         })}
-        <Reflector {...{ machineState, transformationLog }} />
+        <Reflector
+          {...{ machineState, reflectorLog: transformationLog?.reflector }}
+        />
       </group>
 
       {/* where we're going, we don't need lights 
