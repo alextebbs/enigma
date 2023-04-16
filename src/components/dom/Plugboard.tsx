@@ -175,8 +175,6 @@ export default function Plugboard({
         ...machineState,
         plugboard: newPlugboardState,
       })
-
-      return
     }
 
     if (thisKey.dataset.key in machineState.plugboard) {
@@ -226,6 +224,18 @@ export default function Plugboard({
     setHoveredKey(null)
   }
 
+  const keyProps = {
+    plugboard: machineState.plugboard,
+    isEditing,
+    onPlugboardKeyClick,
+    onPlugboardKeyMouseEnter,
+    onPlugboardKeyMouseLeave,
+    forwardsKey,
+    backwardsKey,
+    hoveredKey,
+    workingKey,
+  }
+
   return (
     <div className='flex justify-center'>
       <div className='relative'>
@@ -240,31 +250,13 @@ export default function Plugboard({
           id='plugboard'
           onMouseMove={(e) => onPlugboardMouseMove(e)}
           className='p-10'>
-          {KEYBOARD_LAYOUT.map((row) => {
-            return (
-              <div className='mb-2 text-center' key={row}>
-                {row.split('').map((char) => {
-                  return (
-                    <PlugboardKey
-                      key={char}
-                      {...{
-                        plugboard: machineState.plugboard,
-                        isEditing,
-                        char,
-                        onPlugboardKeyClick,
-                        onPlugboardKeyMouseEnter,
-                        onPlugboardKeyMouseLeave,
-                        forwardsKey,
-                        backwardsKey,
-                        hoveredKey,
-                        workingKey,
-                      }}
-                    />
-                  )
-                })}
-              </div>
-            )
-          })}
+          {KEYBOARD_LAYOUT.map((row) => (
+            <div className='mb-2 text-center' key={row}>
+              {row.split('').map((char) => (
+                <PlugboardKey key={char} char={char} {...keyProps} />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

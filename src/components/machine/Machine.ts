@@ -89,7 +89,7 @@ export default class Machine implements MachineState {
 
     rotor.wireTable = newWireTable
 
-    ALPHA.forEach((char, i) => {
+    ALPHA.forEach((char) => {
       rotor.inverseWireTable[rotor.wireTable[char]] = char
     })
 
@@ -148,7 +148,7 @@ export default class Machine implements MachineState {
     return isLowercase ? char.toLowerCase() : char
   }
 
-  encodeString = function (string) {
+  encodeString = function (string: string) {
     return string
       .split('')
       .map((char) => this.encodeChar(char))

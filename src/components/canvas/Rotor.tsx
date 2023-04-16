@@ -16,8 +16,8 @@ import {
   Dot,
   TextLabel,
 } from './RotorScene'
-import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
+import { useRef, useEffect } from 'react'
 
 export default function Rotor({ rotor, rotorIndex, rotorLog }) {
   const inputPoints = getPoints(
@@ -38,15 +38,14 @@ export default function Rotor({ rotor, rotorIndex, rotorLog }) {
     (360 / ALPHA.length) * rotor.position,
   )
 
+  const { camera, gl } = useThree()
+
   useFrame((state, delta) => {
     if (rotorRef.current) {
-      if (rotorRef.current.rotation.y < targetAngle) {
+      if (rotorRef.current.rotation.y < targetAngle)
         rotorRef.current.rotation.y += 2 * delta
-      }
-
-      if (rotorRef.current.rotation.y > targetAngle) {
+      if (rotorRef.current.rotation.y > targetAngle)
         rotorRef.current.rotation.y -= 2 * delta
-      }
     }
   })
 
@@ -81,30 +80,29 @@ export default function Rotor({ rotor, rotorIndex, rotorLog }) {
           />
         </mesh>
 
-        {ALPHA.map((letter, index) => {
-          return (
-            <group
+        {ALPHA.map((letter, index) => (
+          <group
+            key={index}
+            rotation={[
+              THREE.MathUtils.degToRad(0),
+              THREE.MathUtils.degToRad((360 / ALPHA.length) * -index),
+              THREE.MathUtils.degToRad(0),
+            ]}>
+            <Text
               rotation={[
+                THREE.MathUtils.degToRad(90),
+                THREE.MathUtils.degToRad(90),
                 THREE.MathUtils.degToRad(0),
-                THREE.MathUtils.degToRad((360 / ALPHA.length) * -index),
-                THREE.MathUtils.degToRad(0),
-              ]}>
-              <Text
-                rotation={[
-                  THREE.MathUtils.degToRad(90),
-                  THREE.MathUtils.degToRad(90),
-                  THREE.MathUtils.degToRad(0),
-                ]}
-                position={[ROTOR_RADIUS, 0, 0]}
-                fontSize={0.2}
-                color={'#334155'}
-                font={'/fonts/inconsolata/inconsolata-v31-latin-regular.woff'}
-                characters={ALPHA.join('')}>
-                {index + 1}
-              </Text>
-            </group>
-          )
-        })}
+              ]}
+              position={[ROTOR_RADIUS, 0, 0]}
+              fontSize={0.2}
+              color={'#334155'}
+              font={'/fonts/inconsolata/inconsolata-v31-latin-regular.woff'}
+              characters={ALPHA.join('')}>
+              {index + 1}
+            </Text>
+          </group>
+        ))}
       </group>
 
       {ALPHA.map((letter, index) => {
@@ -118,8 +116,6 @@ export default function Rotor({ rotor, rotorIndex, rotorLog }) {
         let color = DEFAULT_COLOR
         let className = DEFAULT_CLASS
         let lineWidth = 1
-
-        console.log(rotorLog)
 
         const letterToCheck =
           ALPHA[
@@ -142,7 +138,7 @@ export default function Rotor({ rotor, rotorIndex, rotorLog }) {
         }
 
         return (
-          <>
+          <group key={index}>
             {/* STATIC ELEMENTS */}
             {(rotorLog?.forwards.enter == letter ||
               rotorLog?.backwards.exit == letter) && (
@@ -189,7 +185,7 @@ export default function Rotor({ rotor, rotorIndex, rotorLog }) {
                 />
               </group>
             </group>
-          </>
+          </group>
         )
       })}
     </group>

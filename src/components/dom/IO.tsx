@@ -1,11 +1,16 @@
 import { useRef, useEffect } from 'react'
 
-// Split a string into 3 parts, part one is everything leading up to the last alphabetic character, part two is the last alphabetic character, and part three is everything after the last alphabetic character
+/**
+ * Split a string into 3 parts, part one is everything leading up to the last
+ * alphabetic character, part two is the last alphabetic character, and part
+ * three is everything after the last alphabetic character. We need this for
+ * some CSS black magic that we are going to do later.
+ *
+ * @param string The string to split
+ */
 function splitString(str: string): [string, string, string] {
   const lastAlphaIndex = str.search(/[a-zA-Z](?=[^a-zA-Z]*$)/)
-  if (lastAlphaIndex === -1) {
-    return [str, '', '']
-  }
+  if (lastAlphaIndex === -1) return [str, '', '']
   const part1 = str.slice(0, lastAlphaIndex)
   const part2 = str[lastAlphaIndex]
   const part3 = str.slice(lastAlphaIndex + 1)
@@ -16,22 +21,19 @@ export default function IO({ plainText, cipherText, onTextAreaChange }) {
   const plainTextSizerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // When the textarea changes, resize the sizer div to match the textarea
+  // When the textarea changes, resize the textarea match the sizer div
   useEffect(() => {
     const textarea = textareaRef.current
     const sizer = plainTextSizerRef.current
 
-    if (textarea && sizer) {
+    if (textarea && sizer)
       textarea.style.height = sizer.getBoundingClientRect().height + 'px'
-    }
   })
 
+  // Kill repeated key presses so you can hold a key down and see the visualization without AAAAAAAAAAAAAAAAaa
   const onTextAreaKeyDown = (e) => {
-    // Kill repeated key presses so you can hold a key down and see the visualization without AAAAAAAAAAAAAAAAaa
-    if (e.repeat == true && e.key !== 'Backspace' && e.key !== 'Delete') {
+    if (e.repeat == true && e.key !== 'Backspace' && e.key !== 'Delete')
       e.preventDefault()
-      return
-    }
   }
 
   let plainTextSplit = splitString(plainText)

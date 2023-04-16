@@ -43,23 +43,12 @@ export default function Page() {
     <div className='flex h-[100vh] gap-8 p-8'>
       <div className='h-full grow border border-slate-800 bg-black'>
         <PanelHeader title='Rotors' />
-        <RotorsScene
-          {...{
-            machineState,
-            transformationLog,
-          }}
-        />
+        <RotorsScene {...{ machineState, transformationLog }} />
       </div>
       <div className='flex flex-col gap-8'>
         <div className='relative z-10 flex grow flex-col border border-slate-800 bg-black'>
           <PanelHeader title='Input / Output' />
-          <IO
-            {...{
-              onTextAreaChange,
-              plainText,
-              cipherText,
-            }}
-          />
+          <IO {...{ onTextAreaChange, plainText, cipherText }} />
           {transformationLog?.plugboard.forwards.enter && (
             <>
               <div className='absolute left-[25%] top-[100%] h-8 w-[2px] bg-yellow-500'>

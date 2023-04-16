@@ -7,7 +7,6 @@ import {
   ROTOR_WIDTH,
   DEFAULT_CLASS,
   DEFAULT_COLOR,
-  MID_CLASS,
   MID_COLOR,
   ACTIVE_CLASS,
   ACTIVE_COLOR,
@@ -68,7 +67,7 @@ export default function Reflector({ machineState, reflectorLog }) {
         centerPoint.y = centerPoint.y + 0.3
 
         return (
-          <>
+          <group key={letter}>
             {(reflectorLog?.enter == letter ||
               reflectorLog?.exit == letter) && (
               <group position={wireStart}>
@@ -81,19 +80,17 @@ export default function Reflector({ machineState, reflectorLog }) {
               </group>
             )}
 
-            <>
-              <group position={centerPoint}>
-                <Dot color={dotColor} />
-              </group>
+            <group position={centerPoint}>
+              <Dot color={dotColor} />
+            </group>
 
-              <QuadraticBezierLine
-                start={centerPoint}
-                end={wireStart}
-                lineWidth={lineWidth}
-                color={color}
-              />
-            </>
-          </>
+            <QuadraticBezierLine
+              start={centerPoint}
+              end={wireStart}
+              lineWidth={lineWidth}
+              color={color}
+            />
+          </group>
         )
       })}
     </group>
