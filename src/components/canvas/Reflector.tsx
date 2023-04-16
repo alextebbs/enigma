@@ -50,8 +50,6 @@ export default function Reflector({ machineState, transformationLog }) {
         let className = DEFAULT_CLASS
         let lineWidth = 1
 
-        console.log(drawnPoints)
-
         if (transformationLog) {
           if (
             letter == transformationLog.reflector.enter ||

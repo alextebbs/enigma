@@ -1,10 +1,10 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Html } from '@react-three/drei'
 import * as THREE from 'three'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from 'tailwind.config.js'
 import Rotor from './Rotor'
 import Reflector from './Reflector'
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from 'tailwind.config'
 
 const {
   theme: { colors },
@@ -64,7 +64,8 @@ export function TextLabel({ letter, extraClass, color }) {
       center
       transform
       sprite
-      position-x={0.15}>
+      position-x={0.15}
+      occlude={true}>
       {letter}
     </Html>
   )
@@ -99,7 +100,6 @@ export default function RotorsScene({ machineState, transformationLog }) {
               {...{
                 rotor,
                 rotorIndex,
-                machineState,
                 transformationLog,
               }}
             />
