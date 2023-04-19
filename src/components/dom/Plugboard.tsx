@@ -175,6 +175,8 @@ export default function Plugboard({
         ...machineState,
         plugboard: newPlugboardState,
       })
+
+      return
     }
 
     if (thisKey.dataset.key in machineState.plugboard) {
@@ -235,6 +237,8 @@ export default function Plugboard({
     hoveredKey,
     workingKey,
   }
+
+  // TODO:
 
   return (
     <div className='flex justify-center'>
