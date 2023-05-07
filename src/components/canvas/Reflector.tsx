@@ -19,7 +19,7 @@ import {
 } from './RotorScene'
 
 export default function Reflector({ machineState, reflectorLog }) {
-  const reflectorPoints = getPoints(ROTOR_RADIUS * 0.75, ALPHA.length)
+  const reflectorPoints = getPoints(ROTOR_RADIUS * 0.9, ALPHA.length)
   let drawnPoints = []
 
   return (
@@ -88,6 +88,7 @@ export default function Reflector({ machineState, reflectorLog }) {
               start={centerPoint}
               end={wireStart}
               lineWidth={lineWidth}
+              depthTest={false}
               color={color}
             />
           </group>

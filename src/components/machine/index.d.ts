@@ -1,3 +1,6 @@
+// QUESTION: Is this the right spot for this file? What is the magic going on
+// with .d.ts files?
+
 interface WireTable {
   A?: string
   B?: string

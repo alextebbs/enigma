@@ -10,6 +10,8 @@ export default function PlugboardKey({
   onPlugboardKeyMouseEnter,
   onPlugboardKeyMouseLeave,
 }) {
+  // Tailwind, eh?
+
   const active = char in plugboard || workingKey === char
   const hovered = [hoveredKey, plugboard[hoveredKey]].includes(char)
   const working = workingKey == char
@@ -19,8 +21,6 @@ export default function PlugboardKey({
   const backwards =
     backwardsKey != null &&
     (backwardsKey == char || plugboard[char] == backwardsKey)
-
-  // Tailwind, eh?
 
   let keyStateClasses = 'text-slate-500 border-slate-500'
   let dotStateClasses = 'border-slate-500'

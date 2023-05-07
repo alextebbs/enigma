@@ -21,13 +21,13 @@ import { useRef, useEffect } from 'react'
 
 export default function Rotor({ rotor, rotorIndex, rotorLog }) {
   const inputPoints = getPoints(
-    ROTOR_RADIUS * 0.75,
+    ROTOR_RADIUS * 0.9,
     ALPHA.length,
     ROTOR_WIDTH / 2,
   )
 
   const outputPoints = getPoints(
-    ROTOR_RADIUS * 0.75,
+    ROTOR_RADIUS * 0.9,
     ALPHA.length,
     -ROTOR_WIDTH / 2,
   )
@@ -73,9 +73,9 @@ export default function Rotor({ rotor, rotorIndex, rotorLog }) {
           <Wireframe
             // Other props
             simplify={true} // Remove some edges from wireframes
-            stroke={'#475569'} // Color of the stroke
+            stroke={'#819abe'} // Color of the stroke
             thickness={0.025} // Thinkness of the lines
-            backfaceStroke={'#334155'} // Color of the lines that are facing away from the camera
+            backfaceStroke={'#4f6685'} // Color of the lines that are facing away from the camera
             dashInvert={true} // Invert the dashes
           />
         </mesh>

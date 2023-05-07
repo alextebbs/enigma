@@ -8,7 +8,7 @@ import { useRef, useEffect } from 'react'
  *
  * @param string The string to split
  */
-function splitString(str: string): [string, string, string] {
+function splitString(str: string) {
   const lastAlphaIndex = str.search(/[a-zA-Z](?=[^a-zA-Z]*$)/)
   if (lastAlphaIndex === -1) return [str, '', '']
   const part1 = str.slice(0, lastAlphaIndex)
@@ -17,6 +17,7 @@ function splitString(str: string): [string, string, string] {
   return [part1, part2, part3]
 }
 
+// QUESTION: What is the right way to give types to these props?
 export default function IO({ plainText, cipherText, onTextAreaChange }) {
   const plainTextSizerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -31,7 +32,10 @@ export default function IO({ plainText, cipherText, onTextAreaChange }) {
   })
 
   // Kill repeated key presses so you can hold a key down and see the visualization without AAAAAAAAAAAAAAAAaa
-  const onTextAreaKeyDown = (e) => {
+  // QUESTION: Whats the difference between the KeyboardEvent type and the
+  // React.KeyboardEvent type? When I don't import React's KeyboardEvent type,
+  // where does the KeyboardEvent I'm using come from?
+  const onTextAreaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.repeat == true && e.key !== 'Backspace' && e.key !== 'Delete')
       e.preventDefault()
   }

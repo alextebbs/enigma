@@ -26,8 +26,5 @@ Some of the tech this project uses:
 - Better visualize the connections between modules using colored lines
 - Add settings panes
 - Make plugboard collapsible
-- BUG: IO panel should only highlight last alphabetic character.
-- Show actual rotors, not just wiring
-- Curve connections on the reflector should be more fluid
 - Reflector path should draw a gradient between color A and B
 - Add intro animation

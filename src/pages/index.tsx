@@ -13,14 +13,14 @@ export default function Page() {
     reflector: initialReflector,
   })
 
-  const [settings, setSettings] = useState({
-    showRotors: false,
-    allowLowercase: true,
-    plugboardHidden: false,
-    rotorSettingsHidden: true,
-    plugboardSettingsHidden: true,
-    IOSettingsHidden: true,
-  })
+  // const [settings, setSettings] = useState({
+  //   showRotors: false,
+  //   allowLowercase: true,
+  //   plugboardHidden: false,
+  //   rotorSettingsHidden: true,
+  //   plugboardSettingsHidden: true,
+  //   IOSettingsHidden: true,
+  // })
 
   const [transformationLog, setTransformationLog] = useState(undefined)
   const [plainText, setPlainText] = useState('')

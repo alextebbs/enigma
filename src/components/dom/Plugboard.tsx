@@ -1,21 +1,34 @@
 import { KEYBOARD_LAYOUT } from '@/_globals'
 import { useRef, useEffect, useState } from 'react'
 
+import Machine from '@/components/machine/Machine'
+
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from 'tailwind.config.js'
 import PlugboardKey from './PlugboardKey'
+import { RecursiveKeyValuePair } from 'tailwindcss/types/config'
+// import WireTable from '../machine'
 
 const {
   theme: { colors },
 } = resolveConfig(tailwindConfig)
 
 type Point = [x: number, y: number]
+type Color = string | RecursiveKeyValuePair
 
-export const getUniquePairings = (plugboardState) => {
+/**
+ * Given a wiring table state, return a new object that contains only the
+ * unique pairs of characters.
+ *
+ * @param wireTable Wiring table to be processed
+ */
+export const getUniquePairings = (wireTable /*: wireTable */) => {
+  // QUESTION: How do I get my wireTable type to be recognized here?
+
   const uniquePairs = {}
 
-  for (const key in plugboardState) {
-    const value = plugboardState[key]
+  for (const key in wireTable) {
+    const value = wireTable[key]
 
     if (!(value in uniquePairs) || uniquePairs[value] !== key) {
       uniquePairs[key] = value
@@ -42,15 +55,15 @@ export default function Plugboard({
   const [workingKey, setWorkingKey] = useState('')
   const [hoveredKey, setHoveredKey] = useState('')
 
-  const isEditing = useRef(false)
+  const isEditing = useRef<boolean>(false)
   const workingBezierStart = useRef<Point>(null)
   const canvasRect = useRef<DOMRect>(null)
 
   const canvas = useRef<HTMLCanvasElement>(null)
   const workingCanvas = useRef<HTMLCanvasElement>(null)
 
-  let forwardsKey = null
-  let backwardsKey = null
+  let forwardsKey: string = null
+  let backwardsKey: string = null
 
   if (transformationLog) {
     forwardsKey = transformationLog.plugboard.forwards.enter
@@ -84,6 +97,8 @@ export default function Plugboard({
     const uniquePairs = getUniquePairings(plugboard)
 
     Object.entries(uniquePairs).forEach((item) => {
+      // QUESTION: This is not react-y, whats the right way to do it otherwise?
+      // Something with ref callbacks?
       const startEl = document.querySelector<HTMLElement>(
         `[data-key="${item[0]}"]`,
       )
@@ -106,7 +121,7 @@ export default function Plugboard({
         endRect.top - cRect.top + endRect.height / 2,
       ]
 
-      let color
+      let color: Color
 
       if (
         (startEl.dataset.key == backwardsKey ||
@@ -136,14 +151,14 @@ export default function Plugboard({
     ctx: CanvasRenderingContext2D,
     start: Point,
     end: Point,
-    color: string,
+    color: Color,
   ) => {
     const distanceOffset = 50
     const mid: Point = [
       (start[0] + end[0]) / 2,
       (start[1] + end[1]) / 2 + distanceOffset,
     ]
-    ctx.strokeStyle = color
+    ctx.strokeStyle = color as string
     ctx.lineWidth = 3
     ctx.beginPath()
     ctx.moveTo(...start)
