@@ -1,12 +1,81 @@
 import { ALPHA } from '@/_globals'
 
-export default class Machine implements MachineState {
+export interface WireTable {
+  A?: string
+  B?: string
+  C?: string
+  D?: string
+  E?: string
+  F?: string
+  G?: string
+  H?: string
+  I?: string
+  J?: string
+  K?: string
+  L?: string
+  M?: string
+  N?: string
+  O?: string
+  P?: string
+  Q?: string
+  R?: string
+  S?: string
+  T?: string
+  U?: string
+  V?: string
+  W?: string
+  X?: string
+  Y?: string
+  Z?: string
+}
+
+export interface Rotor {
+  name: string
+  wiring: string
+  notch: string
+  position: number
+  offset: number
+  wireTable?: WireTable
+  inverseWireTable?: WireTable
+}
+
+export interface Log {
+  plugboard: BidirectionalLogEntry
+  rotors: BidirectionalLogEntry[]
+  reflector: LogEntry
+}
+
+export interface BidirectionalLogEntry {
+  forwards: LogEntry | null
+  backwards: LogEntry | null
+}
+
+export interface LogEntry {
+  enter: string | null
+  exit: string | null
+}
+
+export interface Reflector {
+  name: string
+  wiring: string
+  wireTable?: WireTable
+  inverseWireTable?: WireTable
+}
+
+export interface MachineState {
+  plugboard: WireTable
+  rotors: Rotor[]
+  reflector: Reflector
+  transformationLog?: Log
+}
+
+export class Machine {
   plugboard: WireTable
   rotors: Rotor[]
   reflector: Reflector
   transformationLog?: Log
 
-  constructor({ plugboard, rotors, reflector }) {
+  constructor({ plugboard, rotors, reflector }: MachineState) {
     this.plugboard = plugboard
     this.rotors = rotors
     this.reflector = reflector
@@ -29,7 +98,10 @@ export default class Machine implements MachineState {
       },
     }
 
-    /* Doing it this way doesn't work, because we fill the array with 
+    /* 
+    QUESTION:
+
+    Doing it this way doesn't work, because we fill the array with 
     references to the same object, so when we change one of the objects, 
     they all change 
 
@@ -53,8 +125,8 @@ export default class Machine implements MachineState {
     }
   }
 
-  createRotorWiringTables = function () {
-    this.rotors = this.rotors.map((rotor) => {
+  createRotorWiringTables = function (this: Machine) {
+    this.rotors = this.rotors.map((rotor: Rotor) => {
       let newRotor = { ...rotor }
 
       newRotor.wireTable = {}
@@ -69,7 +141,7 @@ export default class Machine implements MachineState {
     })
   }
 
-  createReflectorTable = function () {
+  createReflectorTable = function (this: Machine) {
     this.reflector.wireTable = {}
     this.reflector.inverseWireTable = {}
 
@@ -79,7 +151,7 @@ export default class Machine implements MachineState {
     })
   }
 
-  turnRotor = function (rotorIndex) {
+  turnRotor = function (this: Machine, rotorIndex: number) {
     const newWireTable = {}
     const rotor = this.rotors[rotorIndex]
 
@@ -96,7 +168,7 @@ export default class Machine implements MachineState {
     rotor.position = (rotor.position + 1) % ALPHA.length
   }
 
-  encodeChar = function (char) {
+  encodeChar = function (char: string) {
     let isLowercase = false
 
     if (char == char.toLowerCase()) {
@@ -155,7 +227,7 @@ export default class Machine implements MachineState {
       .join('')
   }
 
-  exportTransformationLog = function () {
+  exportTransformationLog = function (): Log {
     return this.transformationLog
   }
 

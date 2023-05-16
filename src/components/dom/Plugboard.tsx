@@ -1,13 +1,10 @@
 import { KEYBOARD_LAYOUT } from '@/_globals'
 import { useRef, useEffect, useState } from 'react'
-
-import Machine from '@/components/machine/Machine'
-
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from 'tailwind.config.js'
-import PlugboardKey from './PlugboardKey'
+import { PlugboardKey } from './PlugboardKey'
 import { RecursiveKeyValuePair } from 'tailwindcss/types/config'
-// import WireTable from '../machine'
+import { MachineState, Log, WireTable } from '@/components/machine/Machine'
 
 const {
   theme: { colors },
@@ -38,6 +35,12 @@ export const getUniquePairings = (wireTable /*: wireTable */) => {
   return uniquePairs
 }
 
+interface PlugboardProps {
+  machineState: MachineState
+  setMachineState: React.Dispatch<React.SetStateAction<MachineState>>
+  transformationLog: Log
+}
+
 /**
  * The plugboard allows specific character pairs to be swapped, and contains
  * the functionality for editing these character pairs.
@@ -47,11 +50,9 @@ export const getUniquePairings = (wireTable /*: wireTable */) => {
  * @param transformationLog The history of the machine's transformations
  *
  */
-export default function Plugboard({
-  machineState,
-  setMachineState,
-  transformationLog,
-}) {
+export const Plugboard: React.FC<PlugboardProps> = (props) => {
+  const { machineState, setMachineState, transformationLog } = props
+
   const [workingKey, setWorkingKey] = useState('')
   const [hoveredKey, setHoveredKey] = useState('')
 
@@ -78,6 +79,8 @@ export default function Plugboard({
       el.height = el.offsetHeight
     })
 
+    // QUESTION: Strict mode tells me I can't assign to current... can I not
+    // modify the ref like this? Do I need to call useRef again?
     canvasRect.current = workingCanvas.current.getBoundingClientRect()
 
     drawPlugboardState(machineState.plugboard)
@@ -93,7 +96,7 @@ export default function Plugboard({
     )
   }
 
-  const drawPlugboardState = (plugboard) => {
+  const drawPlugboardState = (plugboard: WireTable) => {
     const uniquePairs = getUniquePairings(plugboard)
 
     Object.entries(uniquePairs).forEach((item) => {
@@ -222,7 +225,7 @@ export default function Plugboard({
 
     clearWorkingCanvas()
 
-    let color = workingKey == hoveredKey ? colors.red[500] : 'white'
+    let color: Color = workingKey == hoveredKey ? colors.red[500] : 'white'
 
     drawBezier(
       workingCanvas.current.getContext('2d'),
@@ -243,7 +246,7 @@ export default function Plugboard({
 
   const keyProps = {
     plugboard: machineState.plugboard,
-    isEditing,
+    isEditing: isEditing.current,
     onPlugboardKeyClick,
     onPlugboardKeyMouseEnter,
     onPlugboardKeyMouseLeave,

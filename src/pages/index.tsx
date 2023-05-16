@@ -1,10 +1,10 @@
-import Plugboard from '@/components/dom/Plugboard'
-import IO from '@/components/dom/IO'
+import { Plugboard } from '@/components/dom/Plugboard'
+import { IO } from '@/components/dom/IO'
 import { ChangeEvent, useState } from 'react'
 import { initialRotors, initialReflector } from '@/_globals'
-import RotorsScene from '@/components/canvas/RotorScene'
-import PanelHeader from '@/components/dom/PanelHeader'
-import Machine from '@/components/machine/Machine'
+import { RotorsScene } from '@/components/canvas/RotorScene'
+import { PanelHeader } from '@/components/dom/PanelHeader'
+import { Machine, MachineState } from '@/components/machine/Machine'
 
 export default function Page() {
   const [machineState, setMachineState] = useState<MachineState>({
@@ -49,6 +49,7 @@ export default function Page() {
         <div className='relative z-10 flex grow flex-col border border-slate-800 bg-black'>
           <PanelHeader title='Input / Output' />
           <IO {...{ onTextAreaChange, plainText, cipherText }} />
+
           {transformationLog?.plugboard.forwards.enter && (
             <>
               <div className='absolute left-[25%] top-[100%] h-8 w-[2px] bg-yellow-500'>
@@ -72,6 +73,7 @@ export default function Page() {
         <div className='relative border border-slate-800 bg-black'>
           <PanelHeader title='Plugboard' />
 
+          {/* QUESTION: Why does machineState lose its type when passed to Plugboard? */}
           <Plugboard
             {...{ machineState, transformationLog, setMachineState }}
           />

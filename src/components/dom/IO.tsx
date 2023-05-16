@@ -6,9 +6,10 @@ import { useRef, useEffect } from 'react'
  * three is everything after the last alphabetic character. We need this for
  * some CSS black magic that we are going to do later.
  *
- * @param string The string to split
+ * @param {string} str The string to split
+ * @returns {string[]} An array of 3 strings representing the split parts
  */
-function splitString(str: string) {
+function splitString(str: string): string[] {
   const lastAlphaIndex = str.search(/[a-zA-Z](?=[^a-zA-Z]*$)/)
   if (lastAlphaIndex === -1) return [str, '', '']
   const part1 = str.slice(0, lastAlphaIndex)
@@ -17,8 +18,15 @@ function splitString(str: string) {
   return [part1, part2, part3]
 }
 
-// QUESTION: What is the right way to give types to these props?
-export default function IO({ plainText, cipherText, onTextAreaChange }) {
+interface IOProps {
+  plainText: string
+  cipherText: string
+  onTextAreaChange: React.ChangeEventHandler<HTMLTextAreaElement>
+}
+
+export const IO: React.FC<IOProps> = (props) => {
+  const { plainText, cipherText, onTextAreaChange } = props
+
   const plainTextSizerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -31,17 +39,15 @@ export default function IO({ plainText, cipherText, onTextAreaChange }) {
       textarea.style.height = sizer.getBoundingClientRect().height + 'px'
   })
 
-  // Kill repeated key presses so you can hold a key down and see the visualization without AAAAAAAAAAAAAAAAaa
-  // QUESTION: Whats the difference between the KeyboardEvent type and the
-  // React.KeyboardEvent type? When I don't import React's KeyboardEvent type,
-  // where does the KeyboardEvent I'm using come from?
+  // I don't actually think I need any of this anymore, I don't want to kill
+  // repeated key presses.
   const onTextAreaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.repeat == true && e.key !== 'Backspace' && e.key !== 'Delete')
       e.preventDefault()
   }
 
-  let plainTextSplit = splitString(plainText)
-  let cipherTextSplit = splitString(cipherText)
+  const plainTextSplit = splitString(plainText)
+  const cipherTextSplit = splitString(cipherText)
 
   return (
     <div className='relative flex w-full grow justify-center overflow-y-auto'>

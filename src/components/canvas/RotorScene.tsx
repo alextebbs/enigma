@@ -1,8 +1,9 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Html } from '@react-three/drei'
 import * as THREE from 'three'
-import Rotor from './Rotor'
-import Reflector from './Reflector'
+import { Rotor } from './Rotor'
+import { Reflector } from './Reflector'
+import { MachineState, Log } from '../machine/Machine'
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from 'tailwind.config'
 
@@ -56,7 +57,15 @@ export const getCenterPoint = (
   )
 }
 
-export function TextLabel({ letter, extraClass, color }) {
+interface TextLabelProps {
+  letter: string
+  extraClass?: string
+  color?: string
+}
+
+export const TextLabel: React.FC<TextLabelProps> = (props) => {
+  const { letter, extraClass = '', color = DEFAULT_COLOR } = props
+
   return (
     <Html
       as='div'
@@ -71,7 +80,13 @@ export function TextLabel({ letter, extraClass, color }) {
   )
 }
 
-export function Dot({ color }) {
+interface DotProps {
+  color?: string
+}
+
+export const Dot: React.FC<DotProps> = (props) => {
+  const { color = DEFAULT_COLOR } = props
+
   return (
     <mesh>
       <sphereGeometry args={[0.025, 16, 16]} />
@@ -80,7 +95,15 @@ export function Dot({ color }) {
   )
 }
 
-export default function RotorsScene({ machineState, transformationLog }) {
+interface RotorsSceneProps {
+  machineState: MachineState
+  transformationLog?: Log
+}
+
+export const RotorsScene: React.FC<RotorsSceneProps> = ({
+  machineState,
+  transformationLog,
+}) => {
   const offset =
     (machineState.rotors.length * ROTOR_WIDTH +
       (machineState.rotors.length - 2) * ROTOR_GAP) /

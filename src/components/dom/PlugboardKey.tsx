@@ -1,17 +1,34 @@
-export default function PlugboardKey({
-  char,
-  workingKey,
-  isEditing,
-  plugboard,
-  forwardsKey,
-  backwardsKey,
-  hoveredKey,
-  onPlugboardKeyClick,
-  onPlugboardKeyMouseEnter,
-  onPlugboardKeyMouseLeave,
-}) {
-  // Tailwind, eh?
+import { WireTable } from '@/components/machine/Machine'
 
+interface PlugboardKeyProps {
+  char: string
+  workingKey: string
+  isEditing: boolean
+  plugboard: WireTable
+  forwardsKey: string
+  backwardsKey: string
+  hoveredKey: string
+  onPlugboardKeyClick: (e: React.MouseEvent<HTMLSpanElement>) => void
+  onPlugboardKeyMouseEnter: (e: React.MouseEvent<HTMLSpanElement>) => void
+  onPlugboardKeyMouseLeave: () => void
+}
+
+export const PlugboardKey: React.FC<PlugboardKeyProps> = (props) => {
+  const {
+    char,
+    workingKey,
+    isEditing,
+    plugboard,
+    forwardsKey,
+    backwardsKey,
+    hoveredKey,
+    onPlugboardKeyClick,
+    onPlugboardKeyMouseEnter,
+    onPlugboardKeyMouseLeave,
+  } = props
+
+  // QUESTION:
+  // Is there a better way to do this? Seems wild.
   const active = char in plugboard || workingKey === char
   const hovered = [hoveredKey, plugboard[hoveredKey]].includes(char)
   const working = workingKey == char

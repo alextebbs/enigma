@@ -18,8 +18,20 @@ import {
 } from './RotorScene'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useRef, useEffect } from 'react'
+import {
+  BidirectionalLogEntry,
+  Rotor as RotorInterface,
+} from '../machine/Machine'
 
-export default function Rotor({ rotor, rotorIndex, rotorLog }) {
+interface RotorProps {
+  rotor: RotorInterface
+  rotorIndex: number
+  rotorLog: BidirectionalLogEntry
+}
+
+export const Rotor: React.FC<RotorProps> = (props) => {
+  const { rotor, rotorIndex, rotorLog } = props
+
   const inputPoints = getPoints(
     ROTOR_RADIUS * 0.9,
     ALPHA.length,

@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { ALPHA } from '@/_globals'
 import { QuadraticBezierLine } from '@react-three/drei'
+import { MachineState, LogEntry } from '@/components/machine/Machine'
 import {
   ROTOR_GAP,
   ROTOR_RADIUS,
@@ -18,7 +19,14 @@ import {
   TextLabel,
 } from './RotorScene'
 
-export default function Reflector({ machineState, reflectorLog }) {
+interface ReflectorProps {
+  machineState: MachineState
+  reflectorLog: LogEntry
+}
+
+export const Reflector: React.FC<ReflectorProps> = (props) => {
+  const { machineState, reflectorLog } = props
+
   const reflectorPoints = getPoints(ROTOR_RADIUS * 0.9, ALPHA.length)
   let drawnPoints = []
 
