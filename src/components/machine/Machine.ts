@@ -168,7 +168,7 @@ export class Machine {
     rotor.position = (rotor.position + 1) % ALPHA.length
   }
 
-  encodeChar = function (char: string) {
+  encodeChar = function (this: Machine, char: string) {
     let isLowercase = false
 
     if (char == char.toLowerCase()) {
@@ -220,18 +220,18 @@ export class Machine {
     return isLowercase ? char.toLowerCase() : char
   }
 
-  encodeString = function (string: string) {
+  encodeString = function (this: Machine, string: string) {
     return string
       .split('')
       .map((char) => this.encodeChar(char))
       .join('')
   }
 
-  exportTransformationLog = function (): Log {
+  exportTransformationLog = function (this: Machine): Log {
     return this.transformationLog
   }
 
-  exportMachineState = function (): MachineState {
+  exportMachineState = function (this: Machine): MachineState {
     return {
       plugboard: this.plugboard,
       rotors: this.rotors,

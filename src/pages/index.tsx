@@ -73,7 +73,6 @@ export default function Page() {
         <div className='relative border border-slate-800 bg-black'>
           <PanelHeader title='Plugboard' />
 
-          {/* QUESTION: Why does machineState lose its type when passed to Plugboard? */}
           <Plugboard
             {...{ machineState, transformationLog, setMachineState }}
           />
