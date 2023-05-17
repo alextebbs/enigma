@@ -83,21 +83,6 @@ export class Machine {
     this.createReflectorTable()
     this.createRotorWiringTables()
 
-    this.transformationLog = {
-      rotors: Array(this.rotors.length),
-      reflector: { enter: null, exit: null },
-      plugboard: {
-        forwards: {
-          enter: null,
-          exit: null,
-        },
-        backwards: {
-          enter: null,
-          exit: null,
-        },
-      },
-    }
-
     /* 
     QUESTION:
 
@@ -118,10 +103,20 @@ export class Machine {
     
     Is there a better way to do this? This feels dumb.  */
 
-    for (let i = 0; i < this.rotors.length; i++) {
-      this.transformationLog.rotors[i] = { forwards: null, backwards: null }
-      this.transformationLog.rotors[i].forwards = { enter: null, exit: null }
-      this.transformationLog.rotors[i].backwards = { enter: null, exit: null }
+    this.transformationLog = {
+      reflector: { enter: null, exit: null },
+      plugboard: {
+        forwards: { enter: null, exit: null },
+        backwards: { enter: null, exit: null },
+      },
+      rotors: Array(this.rotors.length)
+        .fill(null)
+        .map((_) => {
+          return {
+            forwards: { enter: null, exit: null },
+            backwards: { enter: null, exit: null },
+          }
+        }),
     }
   }
 
