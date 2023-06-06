@@ -2,12 +2,12 @@ import Header from '@/config'
 import Layout from '@/components/dom/Layout'
 import '@/styles/index.css'
 
-export default function App({ Component, pageProps = { title: 'index' } }) {
+export default function App({ Component }: { Component: React.FC }) {
   return (
     <>
-      <Header title={pageProps.title} />
+      <Header />
       <Layout>
-        <Component {...pageProps} />
+        <Component />
       </Layout>
     </>
   )

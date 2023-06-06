@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { ALPHA } from '@/_globals'
+import { ALPHA, WireTable } from '../machine/Machine'
 import { QuadraticBezierLine } from '@react-three/drei'
 import { MachineState, LogEntry } from '@/components/machine/Machine'
 import {
@@ -21,7 +21,7 @@ import {
 
 interface ReflectorProps {
   machineState: MachineState
-  reflectorLog: LogEntry
+  reflectorLog: LogEntry | undefined
 }
 
 export const Reflector: React.FC<ReflectorProps> = (props) => {
@@ -46,7 +46,11 @@ export const Reflector: React.FC<ReflectorProps> = (props) => {
       {ALPHA.map((letter, index) => {
         const wireStart = reflectorPoints[index]
         const wireEnd =
-          reflectorPoints[ALPHA.indexOf(machineState.reflector.wiring[index])]
+          reflectorPoints[
+            ALPHA.indexOf(
+              machineState.reflector.wiring[index] as keyof WireTable,
+            )
+          ]
         const centerPoint = getCenterPoint(wireStart, wireEnd)
         centerPoint.y = centerPoint.y - 1
 
@@ -97,7 +101,9 @@ export const Reflector: React.FC<ReflectorProps> = (props) => {
               end={wireStart}
               lineWidth={lineWidth}
               depthTest={false}
-              color={color}
+              // I'm not sure how to properly convert the string here into
+              // whatever THREE.ColorRepresentation expects, but this works.
+              color={color as unknown as THREE.ColorRepresentation}
             />
           </group>
         )

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { ALPHA } from '@/_globals'
+import { ALPHA, WireTable } from '../machine/Machine'
 import { QuadraticBezierLine, Wireframe, Text } from '@react-three/drei'
 import {
   ROTOR_GAP,
@@ -17,7 +17,7 @@ import {
   TextLabel,
 } from './RotorScene'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import {
   BidirectionalLogEntry,
   Rotor as RotorInterface,
@@ -26,7 +26,7 @@ import {
 interface RotorProps {
   rotor: RotorInterface
   rotorIndex: number
-  rotorLog: BidirectionalLogEntry
+  rotorLog: BidirectionalLogEntry | null | undefined
 }
 
 export const Rotor: React.FC<RotorProps> = (props) => {
@@ -44,7 +44,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
     -ROTOR_WIDTH / 2,
   )
 
-  const rotorRef = useRef(null)
+  const rotorRef = useRef<THREE.Group | null>(null)
 
   const targetAngle = THREE.MathUtils.degToRad(
     (360 / ALPHA.length) * rotor.position,
@@ -119,7 +119,8 @@ export const Rotor: React.FC<RotorProps> = (props) => {
 
       {ALPHA.map((letter, index) => {
         const wireStart = inputPoints[index]
-        const wireEnd = outputPoints[ALPHA.indexOf(rotor.wiring[index])]
+        const wireEnd =
+          outputPoints[ALPHA.indexOf(rotor.wiring[index] as keyof WireTable)]
         const centerPoint = getCenterPoint(wireStart, wireEnd)
         const nextPoint = new THREE.Vector3()
         nextPoint.copy(wireEnd)
@@ -180,19 +181,19 @@ export const Rotor: React.FC<RotorProps> = (props) => {
                 <QuadraticBezierLine
                   start={centerPoint}
                   end={wireStart}
-                  color={color}
+                  color={color as unknown as THREE.Color}
                   lineWidth={lineWidth}
                 />
                 <QuadraticBezierLine
                   start={centerPoint}
                   end={wireEnd}
-                  color={color}
+                  color={color as unknown as THREE.Color}
                   lineWidth={lineWidth}
                 />
                 <QuadraticBezierLine
                   start={wireEnd}
                   end={nextPoint}
-                  color={color}
+                  color={color as unknown as THREE.Color}
                   lineWidth={lineWidth}
                 />
               </group>

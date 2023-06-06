@@ -1,42 +1,50 @@
-import { ALPHA } from '@/_globals'
-
-export interface WireTable {
-  A?: string
-  B?: string
-  C?: string
-  D?: string
-  E?: string
-  F?: string
-  G?: string
-  H?: string
-  I?: string
-  J?: string
-  K?: string
-  L?: string
-  M?: string
-  N?: string
-  O?: string
-  P?: string
-  Q?: string
-  R?: string
-  S?: string
-  T?: string
-  U?: string
-  V?: string
-  W?: string
-  X?: string
-  Y?: string
-  Z?: string
+export class WireTableClass {
+  A: Letter = 'A'
+  B: Letter = 'B'
+  C: Letter = 'C'
+  D: Letter = 'D'
+  E: Letter = 'E'
+  F: Letter = 'F'
+  G: Letter = 'G'
+  H: Letter = 'H'
+  I: Letter = 'I'
+  J: Letter = 'J'
+  K: Letter = 'K'
+  L: Letter = 'L'
+  M: Letter = 'M'
+  N: Letter = 'N'
+  O: Letter = 'O'
+  P: Letter = 'P'
+  Q: Letter = 'Q'
+  R: Letter = 'R'
+  S: Letter = 'S'
+  T: Letter = 'T'
+  U: Letter = 'U'
+  V: Letter = 'V'
+  W: Letter = 'W'
+  X: Letter = 'X'
+  Y: Letter = 'Y'
+  Z: Letter = 'Z'
 }
+
+export interface WireTable extends WireTableClass {}
+
+export type Letter = keyof WireTable
+
+export type Letters = Array<Letter>
+
+// Blah, this didn't work right because WireTable makes the keys optional so
+// this array is empty
+export const ALPHA: Letters = Object.keys(new WireTableClass()) as Letters
 
 export interface Rotor {
   name: string
   wiring: string
-  notch: string
+  notch: Letter
   position: number
   offset: number
-  wireTable?: WireTable
-  inverseWireTable?: WireTable
+  wireTable: WireTable
+  inverseWireTable: WireTable
 }
 
 export interface Log {
@@ -46,34 +54,34 @@ export interface Log {
 }
 
 export interface BidirectionalLogEntry {
-  forwards: LogEntry | null
-  backwards: LogEntry | null
+  forwards: LogEntry
+  backwards: LogEntry
 }
 
 export interface LogEntry {
-  enter: string | null
-  exit: string | null
+  enter: Letter | null
+  exit: Letter | null
 }
 
 export interface Reflector {
   name: string
   wiring: string
-  wireTable?: WireTable
-  inverseWireTable?: WireTable
+  wireTable: WireTable
+  inverseWireTable: WireTable
 }
 
 export interface MachineState {
-  plugboard: WireTable
+  plugboard: Partial<WireTable>
   rotors: Rotor[]
   reflector: Reflector
   transformationLog?: Log
 }
 
 export class Machine {
-  plugboard: WireTable
+  plugboard: Partial<WireTable>
   rotors: Rotor[]
   reflector: Reflector
-  transformationLog?: Log
+  transformationLog: Log
 
   constructor({ plugboard, rotors, reflector }: MachineState) {
     this.plugboard = plugboard
@@ -83,40 +91,18 @@ export class Machine {
     this.createReflectorTable()
     this.createRotorWiringTables()
 
-    /* 
-    QUESTION:
-
-    Doing it this way doesn't work, because we fill the array with 
-    references to the same object, so when we change one of the objects, 
-    they all change 
-
-    this.transformationLog.rotors = Array(this.rotors.length).fill({
-      forwards: {
-        enter: null,
-        exit: null,
-      },
-      backwards: {
-        enter: null,
-        exit: null,
-      },
-    })
-    
-    Is there a better way to do this? This feels dumb.  */
-
     this.transformationLog = {
       reflector: { enter: null, exit: null },
       plugboard: {
         forwards: { enter: null, exit: null },
         backwards: { enter: null, exit: null },
       },
-      rotors: Array(this.rotors.length)
-        .fill(null)
-        .map((_) => {
-          return {
-            forwards: { enter: null, exit: null },
-            backwards: { enter: null, exit: null },
-          }
-        }),
+      rotors: this.rotors.map((_) => {
+        return {
+          forwards: { enter: null, exit: null },
+          backwards: { enter: null, exit: null },
+        }
+      }),
     }
   }
 
@@ -124,12 +110,13 @@ export class Machine {
     this.rotors = this.rotors.map((rotor: Rotor) => {
       let newRotor = { ...rotor }
 
-      newRotor.wireTable = {}
-      newRotor.inverseWireTable = {}
+      newRotor.wireTable = new WireTableClass()
+      newRotor.inverseWireTable = new WireTableClass()
 
       ALPHA.forEach((char, i) => {
-        newRotor.wireTable[char] = rotor.wiring[i]
-        newRotor.inverseWireTable[rotor.wiring[i]] = char
+        const letter = rotor.wiring[i] as Letter
+        newRotor.wireTable[char] = letter
+        newRotor.inverseWireTable[letter] = char
       })
 
       return newRotor
@@ -137,17 +124,19 @@ export class Machine {
   }
 
   createReflectorTable = function (this: Machine) {
-    this.reflector.wireTable = {}
-    this.reflector.inverseWireTable = {}
+    this.reflector.wireTable = new WireTableClass()
+    this.reflector.inverseWireTable = new WireTableClass()
 
     ALPHA.forEach((char, i) => {
-      this.reflector.wireTable[char] = this.reflector.wiring[i]
-      this.reflector.inverseWireTable[this.reflector.wiring[i]] = char
+      const letter = this.reflector.wiring[i] as Letter
+
+      this.reflector.wireTable[char] = letter
+      this.reflector.inverseWireTable[letter] = char
     })
   }
 
   turnRotor = function (this: Machine, rotorIndex: number) {
-    const newWireTable = {}
+    const newWireTable = new WireTableClass()
     const rotor = this.rotors[rotorIndex]
 
     ALPHA.forEach((char, i) => {
@@ -163,15 +152,14 @@ export class Machine {
     rotor.position = (rotor.position + 1) % ALPHA.length
   }
 
-  encodeChar = function (this: Machine, char: string) {
+  encodeChar = function (this: Machine, initialChar: string) {
     let isLowercase = false
 
-    if (char == char.toLowerCase()) {
-      char.toUpperCase()
+    if (initialChar == initialChar.toLowerCase()) {
       isLowercase = true
     }
 
-    char = char.toUpperCase()
+    let char = initialChar.toUpperCase() as Letter
 
     if (!ALPHA.includes(char)) return char
 
@@ -186,9 +174,9 @@ export class Machine {
       this.turnRotor(2)
     }
 
-    this.transformationLog.plugboard.forwards.enter = char
-    char = this.plugboard[char] || char
-    this.transformationLog.plugboard.forwards.exit = char
+    this.transformationLog.plugboard.forwards.enter = char as Letter
+    char = this.plugboard[char as Letter] || char
+    this.transformationLog.plugboard.forwards.exit = char as Letter
 
     for (let i = 0; i < this.rotors.length; i++) {
       this.transformationLog.rotors[i].forwards.enter = char
@@ -212,7 +200,7 @@ export class Machine {
     char = this.plugboard[char] || char
     this.transformationLog.plugboard.backwards.exit = char
 
-    return isLowercase ? char.toLowerCase() : char
+    return isLowercase ? (char.toLowerCase() as string) : (char as string)
   }
 
   encodeString = function (this: Machine, string: string) {
@@ -222,7 +210,7 @@ export class Machine {
       .join('')
   }
 
-  exportTransformationLog = function (this: Machine): Log {
+  exportTransformationLog = function (this: Machine) {
     return this.transformationLog
   }
 
@@ -231,6 +219,7 @@ export class Machine {
       plugboard: this.plugboard,
       rotors: this.rotors,
       reflector: this.reflector,
+      transformationLog: this.transformationLog,
     }
   }
 }

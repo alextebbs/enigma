@@ -4,15 +4,9 @@ import { ChangeEvent, useState } from 'react'
 import { initialRotors, initialReflector } from '@/_globals'
 import { RotorsScene } from '@/components/canvas/RotorScene'
 import { PanelHeader } from '@/components/dom/PanelHeader'
-import { Machine, MachineState } from '@/components/machine/Machine'
+import { Machine, MachineState, Log } from '@/components/machine/Machine'
 
 export default function Page() {
-  const [machineState, setMachineState] = useState<MachineState>({
-    plugboard: {},
-    rotors: initialRotors,
-    reflector: initialReflector,
-  })
-
   // const [settings, setSettings] = useState({
   //   showRotors: false,
   //   allowLowercase: true,
@@ -22,9 +16,15 @@ export default function Page() {
   //   IOSettingsHidden: true,
   // })
 
-  const [transformationLog, setTransformationLog] = useState(undefined)
-  const [plainText, setPlainText] = useState('')
-  const [cipherText, setCipherText] = useState('')
+  const [machineState, setMachineState] = useState<MachineState>({
+    plugboard: {},
+    rotors: initialRotors,
+    reflector: initialReflector,
+  })
+
+  const [transformationLog, setTransformationLog] = useState<Log | null>(null)
+  const [plainText, setPlainText] = useState<string>('')
+  const [cipherText, setCipherText] = useState<string>('')
 
   const onTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     let machine = new Machine({

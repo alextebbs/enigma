@@ -4,12 +4,16 @@ import * as THREE from 'three'
 import { Rotor } from './Rotor'
 import { Reflector } from './Reflector'
 import { MachineState, Log } from '../machine/Machine'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from 'tailwind.config'
+import { colors } from '@/_globals'
 
-const {
-  theme: { colors },
-} = resolveConfig(tailwindConfig)
+// This is messsed up and makes a type error because I don't think tailwind
+// is configured correctly. I'm not sure how to fix it.
+//
+// import resolveConfig from 'tailwindcss/resolveConfig'
+// import tailwindConfig from 'tailwind.config'
+// const {
+//   theme: { colors },
+// } = resolveConfig(tailwindConfig)
 
 export const ROTOR_RADIUS = 3
 export const ROTOR_WIDTH = 1.5
@@ -97,7 +101,7 @@ export const Dot: React.FC<DotProps> = (props) => {
 
 interface RotorsSceneProps {
   machineState: MachineState
-  transformationLog?: Log
+  transformationLog: Log | null
 }
 
 export const RotorsScene: React.FC<RotorsSceneProps> = ({

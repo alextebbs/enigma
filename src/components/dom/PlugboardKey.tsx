@@ -1,13 +1,13 @@
 import { WireTable } from '@/components/machine/Machine'
 
 interface PlugboardKeyProps {
-  char: string
-  workingKey: string
+  char: keyof WireTable
+  workingKey: keyof WireTable | null
   isEditing: boolean
-  plugboard: WireTable
-  forwardsKey: string
-  backwardsKey: string
-  hoveredKey: string
+  plugboard: Partial<WireTable>
+  forwardsKey: keyof WireTable | null
+  backwardsKey: keyof WireTable | null
+  hoveredKey: keyof WireTable | null
   onPlugboardKeyClick: (e: React.MouseEvent<HTMLSpanElement>) => void
   onPlugboardKeyMouseEnter: (e: React.MouseEvent<HTMLSpanElement>) => void
   onPlugboardKeyMouseLeave: () => void
@@ -30,7 +30,9 @@ export const PlugboardKey: React.FC<PlugboardKeyProps> = (props) => {
   // QUESTION:
   // Is there a better way to do this? Seems wild.
   const active = char in plugboard || workingKey === char
-  const hovered = [hoveredKey, plugboard[hoveredKey]].includes(char)
+  const hovered = hoveredKey
+    ? [hoveredKey, plugboard[hoveredKey]].includes(char)
+    : false
   const working = workingKey == char
   const forwards =
     forwardsKey != null &&
