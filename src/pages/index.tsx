@@ -41,11 +41,11 @@ export default function Page() {
 
   return (
     <div className='flex h-[100vh] gap-8 p-8'>
-      <div className='h-full grow border border-slate-800 bg-black'>
+      <div className='h-full w-[calc(100vw-6rem-520px)] border border-slate-800 bg-black'>
         <PanelHeader title='Rotors' />
         <RotorsScene {...{ machineState, transformationLog }} />
       </div>
-      <div className='flex flex-col gap-8'>
+      <div className='flex w-[520px] flex-col gap-8'>
         <div className='relative z-10 flex grow flex-col border border-slate-800 bg-black'>
           <PanelHeader title='Input / Output' />
           <IO {...{ onTextAreaChange, plainText, cipherText }} />

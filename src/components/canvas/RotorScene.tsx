@@ -73,7 +73,7 @@ export const TextLabel: React.FC<TextLabelProps> = (props) => {
   return (
     <Html
       as='div'
-      wrapperClass={`pointer-events-none select-none text-[0.25rem] ${extraClass}`}
+      wrapperClass={`pointer-events-none select-none text-[0.3rem] ${extraClass}`}
       center
       transform
       sprite
@@ -117,7 +117,7 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
     <Canvas
       orthographic
       gl={{ antialias: true }}
-      className='h-full'
+      // className='h-full'
       camera={{ zoom: 100, near: 1, far: 2000, position: [50, 75, 100] }}>
       <group position={[offset, 0, 0]}>
         {machineState.rotors.map((rotor, rotorIndex) => {
@@ -137,9 +137,9 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
         />
       </group>
 
-      {/* where we're going, we don't need lights 
       <directionalLight intensity={0.75} />
-      <ambientLight intensity={0.75} />*/}
+      <ambientLight intensity={0.75} />
+      {/* <ambientLight color={0xffffff} /> */}
 
       <OrbitControls makeDefault />
     </Canvas>

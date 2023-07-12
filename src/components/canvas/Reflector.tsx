@@ -27,7 +27,11 @@ interface ReflectorProps {
 export const Reflector: React.FC<ReflectorProps> = (props) => {
   const { machineState, reflectorLog } = props
 
-  const reflectorPoints = getPoints(ROTOR_RADIUS * 0.9, ALPHA.length)
+  const reflectorPoints = getPoints(
+    ROTOR_RADIUS * 0.9,
+    ALPHA.length,
+    ROTOR_GAP / 2,
+  )
   let drawnPoints = []
 
   return (
@@ -100,7 +104,7 @@ export const Reflector: React.FC<ReflectorProps> = (props) => {
               start={centerPoint}
               end={wireStart}
               lineWidth={lineWidth}
-              depthTest={false}
+              // depthTest={false}
               // I'm not sure how to properly convert the string here into
               // whatever THREE.ColorRepresentation expects, but this works.
               color={color as unknown as THREE.ColorRepresentation}
