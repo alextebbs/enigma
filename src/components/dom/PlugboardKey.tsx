@@ -99,7 +99,7 @@ export const PlugboardKey: React.FC<PlugboardKeyProps> = (props) => {
       onClick={(e) => onPlugboardKeyClick(e)}
       onMouseEnter={(e) => onPlugboardKeyMouseEnter(e)}
       onMouseLeave={() => onPlugboardKeyMouseLeave()}
-      className={`mx-1 inline-block cursor-pointer rounded-lg border px-3 py-2 pb-3 font-bold uppercase ${keyStateClasses}`}>
+      className={`mx-0.5 inline-block cursor-pointer rounded-lg border px-2 py-1 pb-2 text-sm font-bold uppercase xl:mx-1 xl:px-3 xl:py-2 xl:pb-3 xl:text-base ${keyStateClasses}`}>
       {char.toLowerCase()}
       <div
         className={`mt-2 h-3 w-3 rounded-full border-2 ${dotStateClasses}`}></div>

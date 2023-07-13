@@ -5,7 +5,7 @@ import { Rotor } from './Rotor'
 import { Reflector } from './Reflector'
 import { MachineState, Log } from '../machine/Machine'
 import { colors } from '@/_globals'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 // This is messsed up and makes a type error because I don't think tailwind
 // is configured correctly. I'm not sure how to fix it.
@@ -119,6 +119,14 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
       (machineState.rotors.length - 2) * ROTOR_GAP) /
     2
 
+  let cameraZoom = 100
+
+  if (typeof window !== 'undefined') {
+    if (document.body.clientWidth < 768) {
+      cameraZoom = 40
+    }
+  }
+
   const [isDragging, setIsDragging] = useState(false)
 
   return (
@@ -126,7 +134,12 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
       orthographic
       gl={{ antialias: true }}
       // className='h-full'
-      camera={{ zoom: 100, near: 1, far: 2000, position: [20, 65, 100] }}>
+      camera={{
+        zoom: cameraZoom,
+        near: 1,
+        far: 2000,
+        position: [20, 65, 100],
+      }}>
       <group position={[offset, 0, 0]}>
         {machineState.rotors.map((rotor, rotorIndex) => {
           return (
@@ -156,7 +169,7 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
 
       <OrbitControls
         makeDefault
-        minZoom={100}
+        minZoom={40}
         maxZoom={100}
         enabled={!isDragging}
       />

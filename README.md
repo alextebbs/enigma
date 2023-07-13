@@ -22,9 +22,4 @@ Some of the tech this project uses:
 ## TODO
 
 - Mobile
-- Add morse code feature
-- Better visualize the connections between modules using colored lines
-- Add settings panes
-- Make plugboard collapsible
-- Reflector path should draw a gradient between color A and B
 - Add intro animation

@@ -325,7 +325,7 @@ export const Plugboard: React.FC<PlugboardProps> = (props) => {
         <div
           id='plugboard'
           onMouseMove={(e) => onPlugboardMouseMove(e)}
-          className='p-10'>
+          className='p-4 md:p-3 xl:p-10'>
           {KEYBOARD_LAYOUT.map((row) => (
             <div className='mb-2 text-center' key={row}>
               {row.split('').map((char) => (

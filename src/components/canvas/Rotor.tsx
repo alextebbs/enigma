@@ -82,7 +82,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
 
   const outerBind = useGesture(
     {
-      onDrag: ({ event, down, active, offset: [x, y] }) => {
+      onDrag: ({ event, active, offset: [x, y] }) => {
         event.stopPropagation()
         setIsDragging(active)
         setIsInteracting(active)
@@ -101,7 +101,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
                 ...rotor,
                 offset: newOffset,
                 position: newOffset,
-                visualPosition: newOffset,
+                visualPosition: visualOffset,
               }
             } else {
               return rotor
