@@ -21,5 +21,5 @@ Some of the tech this project uses:
 
 ## TODO
 
-- Mobile
-- Add intro animation
+- Add copy to clipboard
+- Add intro animation or info screen

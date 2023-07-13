@@ -105,14 +105,14 @@ interface RotorsSceneProps {
   machineState: MachineState
   transformationLog: Log | null
   setMachineState: Dispatch<SetStateAction<MachineState>>
-  refreshTextArea: (text: string, state: MachineState) => void
+  clearMachine: () => void
 }
 
 export const RotorsScene: React.FC<RotorsSceneProps> = ({
   machineState,
   transformationLog,
   setMachineState,
-  refreshTextArea,
+  clearMachine,
 }) => {
   const offset =
     (machineState.rotors.length * ROTOR_WIDTH +
@@ -153,7 +153,7 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
                 setIsDragging,
                 setMachineState,
                 machineState,
-                refreshTextArea,
+                clearMachine,
               }}
             />
           )

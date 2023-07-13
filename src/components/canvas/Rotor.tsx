@@ -26,6 +26,12 @@ import {
 import { useSpring, animated } from '@react-spring/three'
 import { useGesture } from '@use-gesture/react'
 
+import { Globals } from '@react-spring/shared'
+
+Globals.assign({
+  frameLoop: 'always',
+})
+
 interface RotorProps {
   rotor: RotorInterface
   rotorIndex: number
@@ -33,7 +39,7 @@ interface RotorProps {
   isDragging: boolean
   setIsDragging: Dispatch<SetStateAction<boolean>>
   setMachineState: Dispatch<SetStateAction<MachineState>>
-  refreshTextArea: (text: string | undefined, state: MachineState) => void
+  clearMachine: () => void
 }
 
 export const Rotor: React.FC<RotorProps> = (props) => {
@@ -44,7 +50,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
     setIsDragging,
     isDragging,
     setMachineState,
-    refreshTextArea,
+    clearMachine,
   } = props
 
   const inputPoints = getPoints(
@@ -86,7 +92,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
         event.stopPropagation()
         setIsDragging(active)
         setIsInteracting(active)
-        refreshTextArea()
+        clearMachine()
 
         const dragAngle = y / aspect / 2
         const dragAngleStepped = Math.ceil(dragAngle / step) * step

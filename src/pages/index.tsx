@@ -7,15 +7,6 @@ import { PanelHeader } from '@/components/dom/PanelHeader'
 import { Machine, MachineState, Log } from '@/components/machine/Machine'
 
 export default function Page() {
-  // const [settings, setSettings] = useState({
-  //   showRotors: false,
-  //   allowLowercase: true,
-  //   plugboardHidden: false,
-  //   rotorSettingsHidden: true,
-  //   plugboardSettingsHidden: true,
-  //   IOSettingsHidden: true,
-  // })
-
   const [machineState, setMachineState] = useState<MachineState>({
     plugboard: {},
     rotors: initialRotors,
@@ -26,7 +17,7 @@ export default function Page() {
   const [plainText, setPlainText] = useState<string>('')
   const [cipherText, setCipherText] = useState<string>('')
 
-  const refreshTextArea = () => {
+  const clearMachine = () => {
     setPlainText('')
     setCipherText('')
     setTransformationLog(null)
@@ -60,7 +51,7 @@ export default function Page() {
             machineState,
             transformationLog,
             setMachineState,
-            refreshTextArea,
+            clearMachine,
           }}
         />
         <div className='absolute bottom-6 left-6 z-10 text-xs uppercase tracking-[0.15em] text-gray-500'>
