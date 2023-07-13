@@ -105,7 +105,7 @@ interface RotorsSceneProps {
   machineState: MachineState
   transformationLog: Log | null
   setMachineState: Dispatch<SetStateAction<MachineState>>
-  refreshTextArea: () => void
+  refreshTextArea: (text: string, state: MachineState) => void
 }
 
 export const RotorsScene: React.FC<RotorsSceneProps> = ({
@@ -126,7 +126,7 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
       orthographic
       gl={{ antialias: true }}
       // className='h-full'
-      camera={{ zoom: 100, near: 1, far: 2000, position: [50, 75, 100] }}>
+      camera={{ zoom: 100, near: 1, far: 2000, position: [20, 65, 100] }}>
       <group position={[offset, 0, 0]}>
         {machineState.rotors.map((rotor, rotorIndex) => {
           return (
@@ -139,6 +139,7 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
                 isDragging,
                 setIsDragging,
                 setMachineState,
+                machineState,
                 refreshTextArea,
               }}
             />
@@ -155,8 +156,8 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
 
       <OrbitControls
         makeDefault
-        minZoom={10}
-        maxZoom={50}
+        minZoom={100}
+        maxZoom={100}
         enabled={!isDragging}
       />
     </Canvas>

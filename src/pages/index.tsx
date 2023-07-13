@@ -26,14 +26,16 @@ export default function Page() {
   const [plainText, setPlainText] = useState<string>('')
   const [cipherText, setCipherText] = useState<string>('')
 
-  const refreshTextArea = (text: string = plainText) => {
-    // console.log('hmm')
-    // console.log(machineState.rotors)
+  const refreshTextArea = () => {
+    setPlainText('')
+    setCipherText('')
+    setTransformationLog(null)
+  }
 
-    let machine = new Machine({
+  const onTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const machine = new Machine({
       plugboard: machineState.plugboard,
       rotors: machineState.rotors.map((rotor) => {
-        console.log(rotor.offset)
         return {
           ...rotor,
           position: 0,
@@ -43,14 +45,10 @@ export default function Page() {
       reflector: machineState.reflector,
     })
 
-    setPlainText(text)
-    setCipherText(machine.encodeString(text))
+    setPlainText(e.target.value)
+    setCipherText(machine.encodeString(e.target.value))
     setMachineState(machine.exportMachineState())
     setTransformationLog(machine.exportTransformationLog())
-  }
-
-  const onTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    refreshTextArea(e.target.value)
   }
 
   return (

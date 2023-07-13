@@ -18,7 +18,7 @@ import {
   TextLabel,
 } from './RotorScene'
 import { useThree } from '@react-three/fiber'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   BidirectionalLogEntry,
   Rotor as RotorInterface,
@@ -33,7 +33,7 @@ interface RotorProps {
   isDragging: boolean
   setIsDragging: Dispatch<SetStateAction<boolean>>
   setMachineState: Dispatch<SetStateAction<MachineState>>
-  refreshTextArea: () => void
+  refreshTextArea: (text: string | undefined, state: MachineState) => void
 }
 
 export const Rotor: React.FC<RotorProps> = (props) => {
@@ -44,6 +44,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
     setIsDragging,
     isDragging,
     setMachineState,
+    refreshTextArea,
   } = props
 
   const inputPoints = getPoints(
@@ -60,7 +61,10 @@ export const Rotor: React.FC<RotorProps> = (props) => {
 
   const [isInteracting, setIsInteracting] = useState<boolean | undefined>(false)
 
-  const springOptions = {
+  const { size, viewport } = useThree()
+  const aspect = size.width / viewport.width
+
+  const [outerSpring, setOuterSpring] = useSpring(() => ({
     scale: [1, 1, 1],
     rotation: [0, 0, 0],
     config: {
@@ -68,13 +72,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
       friction: 26,
       tension: 170,
     },
-  }
-
-  const { size, viewport } = useThree()
-  const aspect = size.width / viewport.width
-
-  const [outerSpring, setOuterSpring] = useSpring(() => springOptions)
-  const [innerSpring, setInnerSpring] = useSpring(() => springOptions)
+  }))
 
   const step = (Math.PI * 2) / ALPHA.length
 
@@ -82,46 +80,38 @@ export const Rotor: React.FC<RotorProps> = (props) => {
 
   setOuterSpring({ rotation: [0, targetAngle, 0] })
 
-  const outerBind = useGesture({
-    onDrag: ({ event, active, down, offset: [x, y], memo }) => {
-      event.stopPropagation()
-      setIsDragging(active)
-      setIsInteracting(active)
+  const outerBind = useGesture(
+    {
+      onDrag: ({ event, down, active, offset: [x, y] }) => {
+        event.stopPropagation()
+        setIsDragging(active)
+        setIsInteracting(active)
+        refreshTextArea()
 
-      const dragAngle = y / aspect / 2
-      const dragAngleStepped = Math.ceil(dragAngle / step) * step
-      const newOffset = Math.round(dragAngleStepped / step)
+        const dragAngle = y / aspect / 2
+        const dragAngleStepped = Math.ceil(dragAngle / step) * step
+        const visualOffset = Math.round(dragAngleStepped / step)
+        const newOffset = (visualOffset + ALPHA.length) % ALPHA.length
 
-      // if (!down) {
-      //   console.log(memo)
-
-      //   console.log('newOffset', newOffset)
-
-      setMachineState((prevState) => ({
-        ...prevState,
-        rotors: prevState.rotors.map((rotor, index) => {
-          if (index === rotorIndex) {
-            return {
-              ...rotor,
-              offset: newOffset,
-              position: newOffset,
-              visualPosition: newOffset,
+        setMachineState((prevState) => ({
+          ...prevState,
+          rotors: prevState.rotors.map((rotor, index) => {
+            if (index === rotorIndex) {
+              return {
+                ...rotor,
+                offset: newOffset,
+                position: newOffset,
+                visualPosition: newOffset,
+              }
+            } else {
+              return rotor
             }
-          } else {
-            return rotor
-          }
-        }),
-      }))
-
-      // } else {
-      //   setOuterSpring({
-      //     rotation: [0, dragAngleStepped, 0],
-      //   })
-      // }
-
-      // return newOffset
+          }),
+        }))
+      },
     },
-  })
+    // { drag: { from: [0, 0] } },
+  )
 
   const innerBind = useGesture({
     onHover: ({ hovering, event }) => {
@@ -133,7 +123,9 @@ export const Rotor: React.FC<RotorProps> = (props) => {
     },
   })
 
-  console.log('offsetProp', rotor.offset)
+  useEffect(() => {
+    document.body.style.cursor = isInteracting ? 'grab' : 'auto'
+  }, [isInteracting])
 
   return (
     <group
@@ -146,7 +138,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
       {/* @ts-ignore */}
       <animated.group {...outerSpring} {...outerBind()}>
         {/* @ts-ignore */}
-        <animated.group {...innerSpring} {...innerBind()}>
+        <group {...innerBind()}>
           <mesh>
             <cylinderGeometry
               args={[
@@ -192,7 +184,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
               </Text>
             </group>
           ))}
-        </animated.group>
+        </group>
 
         {ALPHA.map((letter, index) => {
           const wireStart = inputPoints[index]
@@ -217,29 +209,29 @@ export const Rotor: React.FC<RotorProps> = (props) => {
                 ALPHA.length
             ]
 
-          if (rotorLog?.forwards.enter == letterToCheck) {
-            color = ACTIVE_COLOR
-            lineWidth = 2
-          } else if (rotorLog?.backwards.exit == letterToCheck) {
-            color = RETURN_COLOR
-            lineWidth = 2
-          }
+          if (!isDragging) {
+            if (rotorLog?.forwards.enter == letterToCheck) {
+              color = ACTIVE_COLOR
+              lineWidth = 2
+            } else if (rotorLog?.backwards.exit == letterToCheck) {
+              color = RETURN_COLOR
+              lineWidth = 2
+            }
 
-          if (rotorLog?.forwards.enter == letter) {
-            className = ACTIVE_CLASS
-          } else if (rotorLog?.backwards.exit == letter) {
-            className = RETURN_CLASS
+            if (rotorLog?.forwards.enter == letter) {
+              className = ACTIVE_CLASS
+            } else if (rotorLog?.backwards.exit == letter) {
+              className = RETURN_CLASS
+            }
           }
 
           return (
             <group key={index}>
-              {/* STATIC ELEMENTS */}
-              {(rotorLog?.forwards.enter == letter ||
-                rotorLog?.backwards.exit == letter) && (
+              {((rotorLog?.forwards.enter == letter && !isDragging) ||
+                (rotorLog?.backwards.exit == letter && !isDragging)) && (
                 <group
                   position={
                     inputPoints[(index + rotor.position) % ALPHA.length]
-                    // wireStart
                   }>
                   <TextLabel
                     letter={letter}
@@ -249,8 +241,7 @@ export const Rotor: React.FC<RotorProps> = (props) => {
                 </group>
               )}
 
-              {/* ROTATING ELEMENTS */}
-              <group rotation={[0, 0, 0]}>
+              <group>
                 <group position={wireStart}>
                   <Dot color={color} />
                 </group>
