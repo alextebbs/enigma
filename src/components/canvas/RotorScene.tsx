@@ -5,6 +5,7 @@ import { Rotor } from './Rotor'
 import { Reflector } from './Reflector'
 import { MachineState, Log } from '../machine/Machine'
 import { colors } from '@/_globals'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 // This is messsed up and makes a type error because I don't think tailwind
 // is configured correctly. I'm not sure how to fix it.
@@ -21,7 +22,8 @@ export const ROTOR_GAP = 0.75
 
 export const ACTIVE_COLOR = colors.yellow['500']
 export const RETURN_COLOR = colors.pink['500']
-export const DEFAULT_COLOR = colors.gray['800']
+export const DEFAULT_COLOR = colors.gray['700']
+export const DRAGGING_COLOR = colors.gray['600']
 export const MID_COLOR = '#EB7E51'
 
 export const ACTIVE_CLASS = 'text-yellow-500'
@@ -102,16 +104,22 @@ export const Dot: React.FC<DotProps> = (props) => {
 interface RotorsSceneProps {
   machineState: MachineState
   transformationLog: Log | null
+  setMachineState: Dispatch<SetStateAction<MachineState>>
+  refreshTextArea: () => void
 }
 
 export const RotorsScene: React.FC<RotorsSceneProps> = ({
   machineState,
   transformationLog,
+  setMachineState,
+  refreshTextArea,
 }) => {
   const offset =
     (machineState.rotors.length * ROTOR_WIDTH +
       (machineState.rotors.length - 2) * ROTOR_GAP) /
     2
+
+  const [isDragging, setIsDragging] = useState(false)
 
   return (
     <Canvas
@@ -128,6 +136,10 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
                 rotor,
                 rotorIndex,
                 rotorLog: transformationLog?.rotors[rotorIndex],
+                isDragging,
+                setIsDragging,
+                setMachineState,
+                refreshTextArea,
               }}
             />
           )
@@ -141,7 +153,12 @@ export const RotorsScene: React.FC<RotorsSceneProps> = ({
       <ambientLight intensity={0.75} />
       {/* <ambientLight color={0xffffff} /> */}
 
-      <OrbitControls makeDefault />
+      <OrbitControls
+        makeDefault
+        minZoom={10}
+        maxZoom={50}
+        enabled={!isDragging}
+      />
     </Canvas>
   )
 }

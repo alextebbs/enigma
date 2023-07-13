@@ -43,6 +43,7 @@ export interface Rotor {
   notch: Letter
   position: number
   offset: number
+  visualPosition: number
   wireTable: WireTable
   inverseWireTable: WireTable
 }
@@ -90,6 +91,7 @@ export class Machine {
 
     this.createReflectorTable()
     this.createRotorWiringTables()
+    this.setRotorPositions()
 
     this.transformationLog = {
       reflector: { enter: null, exit: null },
@@ -104,6 +106,14 @@ export class Machine {
         }
       }),
     }
+  }
+
+  setRotorPositions = function (this: Machine) {
+    this.rotors.forEach((rotor: Rotor, index: number) => {
+      for (let i = 0; i < rotor.offset; i++) {
+        this.turnRotor(index)
+      }
+    })
   }
 
   createRotorWiringTables = function (this: Machine) {
@@ -150,6 +160,7 @@ export class Machine {
     })
 
     rotor.position = (rotor.position + 1) % ALPHA.length
+    rotor.visualPosition = rotor.visualPosition + 1
   }
 
   encodeChar = function (this: Machine, initialChar: string) {
