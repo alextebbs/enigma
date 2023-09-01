@@ -50,10 +50,10 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (props) => {
 
       {toolTipIsActive && (
         <div
-          className={`absolute w-[400px] border-blue-500 p-4 text-xs text-slate-200 ${
+          className={`absolute inset-x-0 bottom-8 overflow-auto border-slate-800 bg-black/90 p-4 text-xs text-slate-200 max-md:h-[180px] max-md:border-t md:left-auto md:top-auto md:h-auto md:w-[400px] md:border-blue-500 ${
             toolTipPosition == 'outside'
-              ? `right-[calc(100%+1px)] top-[calc(100%+1px)] -translate-y-full rounded-l-md border-y border-l bg-slate-950`
-              : `bottom-[calc(100%+1rem)] left-[1rem] rounded-md bg-[rgba(0,0,0,0.6)] shadow-[0_0_60px_10px_rgba(0,0,0,0.9)]`
+              ? `md:bottom-[-1px] md:left-auto md:right-[calc(100%+1px)] md:rounded-l-md md:border-y md:border-l md:bg-slate-950`
+              : `bg-[rgba(0,0,0,0.6)] md:bottom-[calc(100%+1rem)] md:left-4 md:right-auto md:rounded-md md:shadow-[0_0_60px_10px_rgba(0,0,0,0.9)]`
           }`}>
           {children}
         </div>
