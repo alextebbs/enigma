@@ -21,7 +21,7 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (props) => {
   } = props
 
   return (
-    <div className='relative'>
+    <div className='relative z-[80]'>
       <div className='flex w-full items-center rounded-b-md border-t border-slate-900 bg-black text-xs uppercase tracking-[0.2em] text-slate-600'>
         {!tutorialModeIsActive && (
           <button

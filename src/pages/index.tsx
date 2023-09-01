@@ -61,8 +61,14 @@ export default function Page() {
         <div className='fixed inset-0 z-[90] flex flex-col items-center justify-center bg-slate-950/60'>
           <div className='w-[280px] rounded-md border border-blue-500 bg-black p-6 text-center text-xs text-white'>
             <p className='mb-6'>
-              This is an interactive 3D Enigma machine emulator. Want a quick
-              tutorial?
+              This is an interactive 3D{' '}
+              <a
+                target='_blank'
+                className='underline'
+                href='https://en.wikipedia.org/wiki/Enigma_machine'>
+                Enigma machine
+              </a>{' '}
+              emulator. Want a quick tutorial?
             </p>
             <div className='flex items-center justify-center gap-4 text-center'>
               <button
@@ -87,8 +93,8 @@ export default function Page() {
         </div>
       )}
       <div
-        className={`relative h-[70vh] rounded-md border border-slate-800 bg-black md:h-full md:w-[calc(100vw-6rem-372px)] xl:w-[calc(100vw-6rem-520px)] ${
-          showingRotorsInfo ? `border-blue-500` : ``
+        className={`relative h-[70vh] rounded-md border bg-black md:h-full md:w-[calc(100vw-6rem-372px)] xl:w-[calc(100vw-6rem-520px)] ${
+          showingRotorsInfo ? `border-blue-500` : `border-slate-800`
         }`}>
         <RotorsScene
           {...{
@@ -142,7 +148,7 @@ export default function Page() {
                 <span className='text-yellow-500'>yellow</span> and outgoing
                 signals are <span className='text-pink-500'>pink</span>.
               </p>
-              <p className='mb-3'>
+              <p className=''>
                 You can drag the rotors to set their starting positions. This
                 will change the nature of the ciphertext.
               </p>
@@ -164,8 +170,10 @@ export default function Page() {
       </div>
       <div className='flex flex-col md:w-[372px] md:gap-8 xl:w-[520px]'>
         <div
-          className={`relative z-10 flex h-[30vh] grow flex-col rounded-md border border-slate-800 bg-black md:h-auto ${
-            showingIOInfo ? `rounded-bl-none border-blue-500` : ``
+          className={`relative z-10 flex h-[30vh] grow flex-col rounded-md border bg-black md:h-auto ${
+            showingIOInfo
+              ? `rounded-bl-none border-blue-500`
+              : `border-slate-800`
           }`}>
           <IO {...{ onTextAreaChange, plainText, cipherText, textareaRef }} />
 
@@ -195,13 +203,13 @@ export default function Page() {
                 sent via radio to a recipient.
               </p>
               <p className='mb-3'>
-                The bidirectional nature of the encryption process means that if
+                The encryption process is bi-drectional &mdash; meaning that if
                 two machines have the same rotor starting positions and
-                plugboard settings, ciphertext from one machine can be plugged
-                directly into the other machine to reveal the plaintext of the
-                original message.
+                plugboard settings, ciphertext from one machine can be input
+                into the other machine to reveal the plaintext of the original
+                message.
               </p>
-              <p className='mb-3'>
+              <p className=''>
                 You can test this by copying your ciphertext and pasting it back
                 into the machine.
               </p>
@@ -241,8 +249,12 @@ export default function Page() {
           )}
         </div>
         <div
-          className={`relative rounded-md border border-slate-800 bg-black
-            ${showingPlugboardInfo ? `rounded-bl-none border-blue-500` : ``}
+          className={`relative rounded-md border bg-black
+            ${
+              showingPlugboardInfo
+                ? `rounded-bl-none border-blue-500`
+                : `border-slate-800`
+            }
         `}>
           <Plugboard
             {...{ machineState, transformationLog, setMachineState }}
@@ -263,7 +275,7 @@ export default function Page() {
                 complexity to the cipher. There are 150 trillion possible
                 combinations of letters that can be made on the plugboard.
               </p>
-              <p className='mb-3'>
+              <p className=''>
                 Click letters on the plugboard to connect them to each other.
                 Connected letters are substituted for one another when the
                 signal passes through the plugboard, once before the signal is{' '}
