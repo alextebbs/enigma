@@ -23,14 +23,14 @@ function splitString(str: string): string[] {
 interface IOProps {
   plainText: string
   cipherText: string
+  textareaRef: React.RefObject<HTMLTextAreaElement>
   onTextAreaChange: React.ChangeEventHandler<HTMLTextAreaElement>
 }
 
 export const IO: React.FC<IOProps> = (props) => {
-  const { plainText, cipherText, onTextAreaChange } = props
+  const { plainText, cipherText, onTextAreaChange, textareaRef } = props
 
   const plainTextSizerRef = useRef<HTMLDivElement>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const [showingClipboardSuccess, setShowingClipboardSuccess] =
     useState<boolean>(false)
@@ -58,6 +58,7 @@ export const IO: React.FC<IOProps> = (props) => {
       <div className='absolute w-full max-w-screen-sm resize-none bg-transparent text-sm leading-[3rem] text-gray-50'>
         <textarea
           className='min-h-0 w-full resize-none overflow-y-hidden whitespace-pre-wrap bg-transparent p-10 focus:border-none focus:outline-none'
+          autoFocus
           onChange={(e) => {
             onTextAreaChange(e)
             matchSize()
@@ -65,32 +66,32 @@ export const IO: React.FC<IOProps> = (props) => {
           onKeyDown={(e) => onTextAreaKeyDown(e)}
           value={plainText}
           ref={textareaRef}
-          placeholder='Plaintext input here...'
+          placeholder='Type a message here...'
         />
         <div className='absolute bottom-0 left-10 z-40'>
-          {cipherText && (
-            <button
-              onClick={() => {
-                setShowingClipboardSuccess(true)
-                window.navigator.clipboard.writeText(cipherText)
-              }}
-              className='flex overflow-hidden rounded-sm bg-slate-900 p-2 px-4 text-center text-xs uppercase tracking-[0.15em] text-slate-600 transition-all hover:bg-slate-700 hover:text-slate-200'>
-              Copy To Clipboard
-              <div className='relative ml-2'>
-                <BsClipboard className='opacity-0' />
-                <div
-                  onTransitionEnd={() => setShowingClipboardSuccess(false)}
-                  className={`absolute flex flex-col gap-3 transition-[top] ${
-                    showingClipboardSuccess
-                      ? `top-[-1.4rem]`
-                      : `top-[0.1rem] delay-1000`
-                  }`}>
-                  <BsClipboard />
-                  <BsCheckLg />
-                </div>
+          <button
+            onClick={() => {
+              setShowingClipboardSuccess(true)
+              window.navigator.clipboard.writeText(cipherText)
+            }}
+            className={`flex overflow-hidden rounded-sm bg-slate-900 p-2 px-4 text-center text-xs uppercase tracking-[0.15em] text-slate-600 transition-all hover:bg-slate-700 hover:text-slate-200 ${
+              cipherText ? `block` : `hidden`
+            }`}>
+            Copy Ciphertext
+            <div className='relative ml-2'>
+              <BsClipboard className='opacity-0' />
+              <div
+                onTransitionEnd={() => setShowingClipboardSuccess(false)}
+                className={`absolute flex flex-col gap-3 transition-[top] ${
+                  showingClipboardSuccess
+                    ? `top-[-1.4rem]`
+                    : `top-[0rem] delay-1000`
+                }`}>
+                <BsClipboard />
+                <BsCheckLg />
               </div>
-            </button>
-          )}
+            </div>
+          </button>
         </div>
       </div>
       <div
