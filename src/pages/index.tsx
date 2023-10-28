@@ -86,6 +86,7 @@ export default function Page() {
                   className='flex overflow-hidden rounded-sm bg-slate-500 p-2 px-4 text-center text-xs uppercase tracking-[0.15em] text-white transition-all hover:bg-slate-700'
                   onClick={() => {
                     setTutorialModeIsActive(false)
+                    setShowingTutorialModal(false)
                     textareaRef.current?.focus()
                   }}>
                   No
